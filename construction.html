@@ -8,8 +8,346 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-</head>
+  <style>
+    /* ── Page-specific extras ── */
+    .service-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+      margin-top: 32px;
+    }
 
+    .service-detail-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: 0 4px 16px rgba(7,53,35,0.06);
+      transition: transform var(--fast), box-shadow var(--fast);
+    }
+
+    .service-detail-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 36px rgba(7,53,35,0.12);
+    }
+
+    .sdc-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .sdc-icon {
+      display: inline-grid;
+      place-items: center;
+      width: 52px;
+      height: 52px;
+      flex: 0 0 auto;
+      border-radius: 12px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 26px;
+    }
+
+    .sdc-header h3 {
+      margin: 0;
+      color: var(--primary-dark);
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.4;
+    }
+
+    .sdc-body p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .docs-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .docs-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13.5px;
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    .docs-list li::before {
+      content: "✓";
+      flex: 0 0 auto;
+      display: inline-grid;
+      place-items: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 10px;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    .sdc-meta {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--accent-soft);
+      color: #7a5a18;
+      border: 1px solid rgba(185,151,58,0.25);
+    }
+
+    .steps-section {
+      background: var(--primary-dark);
+      border-radius: 18px;
+      padding: 48px;
+      margin-top: 32px;
+      color: #fff;
+    }
+
+    .steps-section h3 {
+      margin: 0 0 36px;
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 24px;
+    }
+
+    .step-item {
+      position: relative;
+    }
+
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .step-item h4 {
+      margin: 0 0 6px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .step-item p {
+      margin: 0;
+      font-size: 13px;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.7;
+    }
+
+    .alert-box {
+      display: flex;
+      gap: 16px;
+      padding: 20px 24px;
+      background: #fffbef;
+      border: 1px solid rgba(185,151,58,0.35);
+      border-right: 5px solid var(--accent);
+      border-radius: 10px;
+      margin-top: 32px;
+    }
+
+    .alert-box-icon {
+      font-size: 24px;
+      flex: 0 0 auto;
+    }
+
+    .alert-box p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--ink);
+      line-height: 1.8;
+    }
+
+    .alert-box strong {
+      color: var(--primary-dark);
+    }
+
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .faq-item {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .faq-q {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 22px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      gap: 12px;
+      user-select: none;
+    }
+
+    .faq-q:hover {
+      background: var(--primary-soft);
+    }
+
+    .faq-toggle {
+      flex: 0 0 auto;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: inline-grid;
+      place-items: center;
+      font-size: 16px;
+      transition: transform var(--fast), background var(--fast);
+    }
+
+    .faq-item.open .faq-toggle {
+      transform: rotate(45deg);
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .faq-a {
+      display: none;
+      padding: 0 22px 18px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.85;
+    }
+
+    .faq-item.open .faq-a {
+      display: block;
+    }
+
+    .cta-banner {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: 18px;
+      padding: 44px 48px;
+      margin-top: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .cta-banner h3 {
+      margin: 0 0 8px;
+      color: #fff;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .cta-banner p {
+      margin: 0;
+      color: rgba(255,255,255,0.78);
+      font-size: 15px;
+    }
+
+    .cta-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      flex: 0 0 auto;
+    }
+
+    .btn-white {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 26px;
+      border-radius: 9px;
+      background: #fff;
+      color: var(--primary-dark);
+      font-weight: 800;
+      font-size: 15px;
+      font-family: var(--font-ar);
+      border: none;
+      cursor: pointer;
+      transition: transform var(--fast), box-shadow var(--fast);
+    }
+
+    .btn-white:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+    }
+
+    .btn-outline-white {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 26px;
+      border-radius: 9px;
+      background: transparent;
+      color: #fff;
+      font-weight: 700;
+      font-size: 15px;
+      font-family: var(--font-ar);
+      border: 2px solid rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: transform var(--fast), border-color var(--fast), background var(--fast);
+    }
+
+    .btn-outline-white:hover {
+      border-color: #fff;
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      .steps-section { padding: 28px 22px; }
+      .steps-grid { grid-template-columns: 1fr 1fr; }
+      .cta-banner { padding: 28px 22px; flex-direction: column; }
+      .cta-actions { width: 100%; }
+      .btn-white, .btn-outline-white { width: 100%; justify-content: center; }
+    }
+
+    @media (max-width: 480px) {
+      .steps-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
 <body>
   <div id="header-placeholder"></div>
 
@@ -18,9 +356,9 @@
       <div class="hero-content">
         <span class="badge">مصالح البلدية</span>
         <h2>مصلحة البناء والتعمير</h2>
-        <p>متابعة رخص البناء، مخططات التهيئة، ومرافقة الملفات العمرانية وفق الإجراءات الإدارية المعمول بها.</p>
+        <p>خدمات رخص البناء، شهادات التعمير، مخططات التهيئة، ومتابعة ملفات التسوية — كل ما تحتاجه في مكان واحد.</p>
         <div class="hero-actions">
-          <a href="#construction-services" class="btn primary">عرض الخدمات</a>
+          <a href="#services" class="btn primary">عرض الخدمات</a>
           <a href="contact.html" class="btn secondary">طلب معلومات</a>
         </div>
       </div>
@@ -28,64 +366,273 @@
 
     <section class="quick-stats" aria-label="معلومات سريعة">
       <div>
-        <strong>03</strong>
-        <span>محاور عمرانية</span>
+        <strong>06</strong>
+        <span>خدمات إدارية</span>
       </div>
       <div>
-        <strong>01</strong>
-        <span>مصلحة مختصة</span>
+        <strong>30</strong>
+        <span>يوم أجل المعالجة</span>
       </div>
       <div>
-        <strong>2026</strong>
-        <span>إرشاد رقمي</span>
+        <strong>08-15</strong>
+        <span>قانون التسوية</span>
       </div>
     </section>
 
-    <section class="section" id="construction-services">
+    <!-- ===== SERVICES ===== -->
+    <section class="section" id="services">
       <div class="section-heading">
-        <span>البناء والتعمير</span>
-        <h2>خدمات مرتبطة بالتنظيم العمراني</h2>
+        <span>الخدمات الإدارية</span>
+        <h2>رخص وشهادات البناء والتعمير</h2>
       </div>
 
-      <div class="cards service-grid">
-        <article class="card service-card">
-          <span class="card-icon">01</span>
-          <h3>رخص البناء</h3>
-          <p>إرشاد المواطنين حول ملفات رخص البناء والمسار الإداري الخاص بها.</p>
-        </article>
+      <div class="service-detail-grid">
 
-        <article class="card service-card">
-          <span class="card-icon">02</span>
-          <h3>مخططات التهيئة</h3>
-          <p>تقديم معلومات حول مخططات التهيئة والتوجيهات العمرانية المحلية.</p>
-        </article>
+        <!-- رخصة البناء -->
+        <div class="service-detail-card">
+          <div class="sdc-header">
+            <span class="sdc-icon">🏗️</span>
+            <h3>رخصة البناء</h3>
+          </div>
+          <div class="sdc-body">
+            <p>وثيقة إدارية إلزامية لكل بناء جديد أو توسعة. تُمنح بعد دراسة الملف التقني من قِبل المصالح المختصة.</p>
+            <strong style="font-size:13px;color:var(--primary-dark);">الوثائق المطلوبة:</strong>
+            <ul class="docs-list" style="margin-top:8px;">
+              <li>طلب مكتوب موجّه لرئيس البلدية</li>
+              <li>مخطط الموقع والتصميم المعماري (4 نسخ)</li>
+              <li>عقد الملكية أو عقد التنازل</li>
+              <li>شهادة المطابقة أو شهادة التعمير</li>
+              <li>كشف المساحة والحدود</li>
+            </ul>
+          </div>
+          <div class="sdc-meta">
+            <span class="tag">⏱ 30 يوم</span>
+            <span class="tag">💰 مجاني</span>
+          </div>
+        </div>
 
-        <article class="card service-card">
-          <span class="card-icon">03</span>
-          <h3>مراقبة المشاريع</h3>
-          <p>متابعة المشاريع العمرانية والتأكد من احترام الإجراءات التنظيمية المعمول بها.</p>
-        </article>
+        <!-- رخصة الهدم -->
+        <div class="service-detail-card">
+          <div class="sdc-header">
+            <span class="sdc-icon">🔨</span>
+            <h3>رخصة الهدم</h3>
+          </div>
+          <div class="sdc-body">
+            <p>مطلوبة قبل هدم أي مبنى كليًا أو جزئيًا، وتضمن سلامة المحيط والمرور وفق الضوابط القانونية.</p>
+            <strong style="font-size:13px;color:var(--primary-dark);">الوثائق المطلوبة:</strong>
+            <ul class="docs-list" style="margin-top:8px;">
+              <li>طلب مكتوب موجّه لرئيس البلدية</li>
+              <li>عقد الملكية</li>
+              <li>تصريح بالهدم موقّع من مهندس معتمد</li>
+              <li>تقرير تقني حول الوضع الهيكلي</li>
+              <li>تصوير فوتوغرافي للبناء المراد هدمه</li>
+            </ul>
+          </div>
+          <div class="sdc-meta">
+            <span class="tag">⏱ 15 يوم</span>
+            <span class="tag">💰 مجاني</span>
+          </div>
+        </div>
+
+        <!-- شهادة المطابقة -->
+        <div class="service-detail-card">
+          <div class="sdc-header">
+            <span class="sdc-icon">✅</span>
+            <h3>شهادة المطابقة</h3>
+          </div>
+          <div class="sdc-body">
+            <p>تُسلَّم عند انتهاء الأشغال وتثبت أن البناء مطابق لرخصة البناء الممنوحة والمعايير التقنية المعمول بها.</p>
+            <strong style="font-size:13px;color:var(--primary-dark);">الوثائق المطلوبة:</strong>
+            <ul class="docs-list" style="margin-top:8px;">
+              <li>رخصة البناء الأصلية</li>
+              <li>تصريح بانتهاء الأشغال</li>
+              <li>تقرير تقني من مهندس معتمد</li>
+              <li>تصوير فوتوغرافي للبناء المنجز</li>
+            </ul>
+          </div>
+          <div class="sdc-meta">
+            <span class="tag">⏱ 21 يوم</span>
+            <span class="tag">💰 مجاني</span>
+          </div>
+        </div>
+
+        <!-- شهادة التعمير -->
+        <div class="service-detail-card">
+          <div class="sdc-header">
+            <span class="sdc-icon">📋</span>
+            <h3>شهادة التعمير</h3>
+          </div>
+          <div class="sdc-body">
+            <p>وثيقة تُعلم صاحبها بالقيود العمرانية السارية على قطعة أرضية معينة وفق مخططات التهيئة.</p>
+            <strong style="font-size:13px;color:var(--primary-dark);">الوثائق المطلوبة:</strong>
+            <ul class="docs-list" style="margin-top:8px;">
+              <li>طلب مكتوب موجّه لرئيس البلدية</li>
+              <li>عقد الملكية أو عقد الأرض</li>
+              <li>مخطط تحديد الموقع</li>
+              <li>بطاقة التعريف الوطنية</li>
+            </ul>
+          </div>
+          <div class="sdc-meta">
+            <span class="tag">⏱ 15 يوم</span>
+            <span class="tag">💰 مجاني</span>
+          </div>
+        </div>
+
+        <!-- ملفات قانون 08-15 -->
+        <div class="service-detail-card">
+          <div class="sdc-header">
+            <span class="sdc-icon">📁</span>
+            <h3>تسوية البناء — قانون 08-15</h3>
+          </div>
+          <div class="sdc-body">
+            <p>متابعة ملفات تسوية البنايات غير المرخصة وفق أحكام القانون 08-15 المتعلق بقواعد مطابقة البنايات.</p>
+            <strong style="font-size:13px;color:var(--primary-dark);">الوثائق المطلوبة:</strong>
+            <ul class="docs-list" style="margin-top:8px;">
+              <li>طلب تسوية البناء</li>
+              <li>عقد الملكية أو أي وثيقة إثبات</li>
+              <li>المخطط المعماري للبناء القائم</li>
+              <li>تقرير تقني من مكتب دراسات معتمد</li>
+              <li>دفع الرسوم المقررة</li>
+            </ul>
+          </div>
+          <div class="sdc-meta">
+            <span class="tag">⏱ 60 يوم</span>
+            <span class="tag">📌 متابعة</span>
+          </div>
+        </div>
+
+        <!-- رخصة التجزئة -->
+        <div class="service-detail-card">
+          <div class="sdc-header">
+            <span class="sdc-icon">🗺️</span>
+            <h3>رخصة التجزئة</h3>
+          </div>
+          <div class="sdc-body">
+            <p>تُمنح لتجزئة قطعة أرضية إلى عدة حصص مع ضمان الانسجام مع مخطط شغل الأراضي المعتمد.</p>
+            <strong style="font-size:13px;color:var(--primary-dark);">الوثائق المطلوبة:</strong>
+            <ul class="docs-list" style="margin-top:8px;">
+              <li>طلب رخصة التجزئة</li>
+              <li>عقد الملكية</li>
+              <li>مخطط التجزئة من مختبر مساحي معتمد</li>
+              <li>كشف الحدود والمساحات</li>
+              <li>شهادة التعمير للقطعة الأصلية</li>
+            </ul>
+          </div>
+          <div class="sdc-meta">
+            <span class="tag">⏱ 45 يوم</span>
+            <span class="tag">💰 رسوم إدارية</span>
+          </div>
+        </div>
+
       </div>
     </section>
 
-    <section class="section news-section">
-      <div class="section-heading">
-        <span>إرشادات</span>
-        <h2>قبل إيداع الملف</h2>
+    <!-- ===== STEPS ===== -->
+    <section class="section">
+      <div class="steps-section">
+        <h3>📌 خطوات تقديم الملف</h3>
+        <div class="steps-grid">
+          <div class="step-item">
+            <div class="step-num">01</div>
+            <h4>تجميع الوثائق</h4>
+            <p>تحضير جميع الوثائق المطلوبة للخدمة المعنية في نسختين أصليتين على الأقل.</p>
+          </div>
+          <div class="step-item">
+            <div class="step-num">02</div>
+            <h4>إيداع الملف</h4>
+            <p>التوجه إلى مصلحة البناء والتعمير وإيداع الملف لدى الموظف المختص.</p>
+          </div>
+          <div class="step-item">
+            <div class="step-num">03</div>
+            <h4>وصل الإيداع</h4>
+            <p>استلام وصل الإيداع مع رقم الملف للمتابعة خلال الآجال القانونية.</p>
+          </div>
+          <div class="step-item">
+            <div class="step-num">04</div>
+            <h4>الدراسة التقنية</h4>
+            <p>يُحال الملف على لجنة الدراسة التقنية التي تُبدي رأيها خلال الأجل المحدد.</p>
+          </div>
+          <div class="step-item">
+            <div class="step-num">05</div>
+            <h4>قرار البلدية</h4>
+            <p>يُصدر رئيس البلدية قراره بالقبول أو الرفض مع تعليل المبرر.</p>
+          </div>
+          <div class="step-item">
+            <div class="step-num">06</div>
+            <h4>استلام الوثيقة</h4>
+            <p>سحب الرخصة أو الشهادة بعد الإشعار، مع الاحتفاظ بنسخة من الملف.</p>
+          </div>
+        </div>
       </div>
+    </section>
 
-      <div class="cards news-grid">
-        <article class="card news-card">
-          <time datetime="2026-05-03">03 ماي 2026</time>
-          <h3>تحضير الوثائق</h3>
-          <p>يرجى التأكد من اكتمال الوثائق التقنية والإدارية قبل إيداع أي طلب.</p>
-        </article>
+    <!-- ===== ALERT ===== -->
+    <section class="section">
+      <div class="alert-box">
+        <div class="alert-box-icon">⚠️</div>
+        <div>
+          <p><strong>تنبيه هام للمواطن:</strong> يُعدّ البناء دون رخصة مخالفة إدارية تستوجب الغرامة المالية وهدم البناء وفق القانون الجزائري. تأكد من استيفاء جميع الشروط قبل الشروع في أي أشغال.</p>
+          <p style="margin-top:8px;">للاستفسار، توجّه إلى المصلحة خلال ساعات العمل: <strong>الأحد – الخميس | 08:00 – 16:00</strong></p>
+        </div>
+      </div>
+    </section>
 
-        <article class="card news-card">
-          <time datetime="2026-05-03">03 ماي 2026</time>
-          <h3>طلب التوجيه</h3>
-          <p>يمكن التواصل مع البلدية للحصول على معلومات أولية حول إجراءات البناء والتعمير.</p>
-        </article>
+    <!-- ===== FAQ ===== -->
+    <section class="section">
+      <div class="section-heading">
+        <span>أسئلة شائعة</span>
+        <h2>ماذا يسألنا المواطنون؟</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            هل يمكن بناء منزل دون رخصة في المناطق الريفية؟
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-a">لا. رخصة البناء إلزامية في جميع المناطق دون استثناء، بما فيها المناطق الريفية والزراعية. البناء دون رخصة عرضة للهدم قانونياً.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            ما هو أجل الرد على طلب رخصة البناء؟
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-a">يُحدد القانون أجلاً أقصاه 30 يوماً لمعالجة طلبات رخصة البناء الفردية. تمديد الأجل ممكن في حالات الملفات المعقدة.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            كيف يمكن تسوية بناء قديم غير مرخص؟
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-a">يمكن الاستفادة من أحكام قانون 08-15 المتعلق بالتسوية. يجب تقديم ملف يتضمن المخططات التقنية وتقرير مهندس معتمد. تُمنح التسوية بعد التحقق من مطابقة البناء للمعايير.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            هل يحق للجيران الاعتراض على رخصة البناء؟
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-a">نعم، يحق لأصحاب العقارات المجاورة تقديم اعتراض مكتوب خلال الأجل القانوني، وذلك إذا تضررت حقوقهم من مشروع البناء.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            هل رخصة البناء قابلة للتجديد؟
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-a">نعم، رخصة البناء صالحة لمدة 3 سنوات قابلة للتجديد مرة واحدة. يجب طلب التجديد قبل انتهاء الأجل.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="section">
+      <div class="cta-banner">
+        <div>
+          <h3>هل تحتاج مساعدة في ملفك؟</h3>
+          <p>فريق مصلحة البناء والتعمير جاهز لمرافقتك خلال ساعات العمل الرسمية.</p>
+        </div>
+        <div class="cta-actions">
+          <a href="contact.html" class="btn-white">📞 اتصل بنا</a>
+          <a href="#services" class="btn-outline-white">📋 قائمة الخدمات</a>
+        </div>
       </div>
     </section>
   </main>
@@ -95,5 +642,11 @@
   </footer>
 
   <script src="header-loader.js"></script>
+  <script>
+    function toggleFaq(el) {
+      const item = el.closest('.faq-item');
+      item.classList.toggle('open');
+    }
+  </script>
 </body>
 </html>
