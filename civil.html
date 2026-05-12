@@ -8,84 +8,544 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-</head>
+  <style>
+    .civil-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 32px;
+    }
 
+    .civil-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: 0 4px 16px rgba(7,53,35,0.06);
+      transition: transform var(--fast), box-shadow var(--fast);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .civil-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      height: 4px;
+      background: var(--primary);
+    }
+
+    .civil-card.digital::before { background: #2563eb; }
+    .civil-card.available::before { background: var(--primary); }
+    .civil-card.info::before { background: var(--accent); }
+
+    .civil-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 40px rgba(7,53,35,0.12);
+    }
+
+    .civil-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .civil-card-icon {
+      display: inline-grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      background: var(--primary-soft);
+      font-size: 28px;
+      flex: 0 0 auto;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .status-badge.online {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-badge.available {
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    .status-badge.coming {
+      background: var(--accent-soft);
+      color: #7a5a18;
+    }
+
+    .civil-card h3 {
+      margin: 0 0 10px;
+      color: var(--primary-dark);
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .civil-card p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .docs-list {
+      list-style: none;
+      margin: 12px 0 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .docs-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13.5px;
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    .docs-list li::before {
+      content: "✓";
+      flex: 0 0 auto;
+      display: inline-grid;
+      place-items: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 10px;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    .card-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 18px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: var(--font-ar);
+      transition: background var(--fast), transform var(--fast);
+    }
+
+    .card-link-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .info-strip {
+      background: var(--primary-soft);
+      border: 1px solid rgba(7,95,59,0.18);
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+
+    .info-strip-icon { font-size: 28px; flex: 0 0 auto; }
+
+    .info-strip p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--primary-dark);
+      font-weight: 600;
+      line-height: 1.7;
+    }
+
+    .hours-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .hour-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .hour-card .day {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .hour-card .time {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    .hour-card .note {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .faq-item {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .faq-q {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 22px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      gap: 12px;
+      user-select: none;
+    }
+
+    .faq-q:hover { background: var(--primary-soft); }
+
+    .faq-toggle {
+      flex: 0 0 auto;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: inline-grid;
+      place-items: center;
+      font-size: 16px;
+      transition: transform var(--fast), background var(--fast);
+    }
+
+    .faq-item.open .faq-toggle {
+      transform: rotate(45deg);
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .faq-a {
+      display: none;
+      padding: 0 22px 18px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.85;
+    }
+
+    .faq-item.open .faq-a { display: block; }
+
+    .digital-banner {
+      background: linear-gradient(135deg, #1e40af, #1e3a8a);
+      border-radius: 16px;
+      padding: 36px 40px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+
+    .digital-banner-icon { font-size: 48px; flex: 0 0 auto; }
+
+    .digital-banner h3 {
+      margin: 0 0 6px;
+      color: #fff;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .digital-banner p {
+      margin: 0 0 16px;
+      color: rgba(255,255,255,0.78);
+      font-size: 14px;
+    }
+
+    .btn-blue {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      border-radius: 8px;
+      background: #fff;
+      color: #1e3a8a;
+      font-size: 14px;
+      font-weight: 800;
+      font-family: var(--font-ar);
+      transition: transform var(--fast), box-shadow var(--fast);
+    }
+
+    .btn-blue:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 768px) {
+      .digital-banner { padding: 24px 20px; flex-direction: column; }
+    }
+  </style>
+</head>
 <body>
   <div id="header-placeholder"></div>
 
   <main>
     <section class="hero">
       <div class="hero-content">
-        <span class="badge">الخدمات الرقمية</span>
-        <h2>خدمات الحالة المدنية</h2>
-        <p>فضاء إرشادي للوصول إلى خدمات الحالة المدنية الرقمية ومتابعة الوثائق الأساسية للمواطنين.</p>
+        <span class="badge">الخدمات الإدارية</span>
+        <h2>مصلحة الحالة المدنية</h2>
+        <p>وثائق الميلاد، الزواج، الطلاق، الوفاة، وشهادة الإقامة — كل ما يحتاجه المواطن من وثائق مدنية أساسية.</p>
         <div class="hero-actions">
           <a href="#civil-services" class="btn primary">عرض الخدمات</a>
-          <a href="contact.html" class="btn secondary">طلب معلومات</a>
+          <a href="contact.html" class="btn secondary">طلب استفسار</a>
         </div>
       </div>
     </section>
 
     <section class="quick-stats" aria-label="معلومات سريعة">
       <div>
-        <strong>03</strong>
-        <span>خدمات أساسية</span>
+        <strong>06</strong>
+        <span>خدمات مدنية</span>
       </div>
       <div>
         <strong>01</strong>
-        <span>خدمة رقمية</span>
+        <span>خدمة رقمية متاحة</span>
       </div>
       <div>
-        <strong>2026</strong>
-        <span>إرشاد رقمي</span>
+        <strong>مجاني</strong>
+        <span>جميع الوثائق</span>
       </div>
     </section>
 
+    <!-- ===== DIGITAL BANNER ===== -->
+    <section class="section">
+      <div class="digital-banner">
+        <div class="digital-banner-icon">💻</div>
+        <div>
+          <h3>استخراج شهادة الميلاد عبر الإنترنت</h3>
+          <p>بإمكانك الآن طلب شهادة الميلاد رقمياً عبر بوابة وزارة الداخلية دون التنقل إلى البلدية.</p>
+          <a href="https://etatcivil.interieur.gov.dz/" target="_blank" rel="noopener" class="btn-blue">🔗 الوصول للخدمة الرقمية</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SERVICES ===== -->
     <section class="section" id="civil-services">
       <div class="section-heading">
-        <span>الخدمات الرقمية</span>
-        <h2>خدمات الحالة المدنية</h2>
+        <span>الخدمات المدنية</span>
+        <h2>وثائق الحالة المدنية</h2>
       </div>
 
-      <div class="cards service-grid">
-        <a class="card service-card" href="https://etatcivil.interieur.gov.dz/" target="_blank" rel="noopener">
-          <span class="card-icon">01</span>
-          <h3>استخراج شهادة الميلاد عن بعد</h3>
-          <p>طلب شهادة الميلاد عبر الإنترنت من الموقع الرسمي لوزارة الداخلية.</p>
-        </a>
+      <div class="civil-grid">
 
-        <article class="card service-card">
-          <span class="card-icon">02</span>
+        <!-- شهادة الميلاد -->
+        <div class="civil-card digital">
+          <div class="civil-card-top">
+            <span class="civil-card-icon">📄</span>
+            <span class="status-badge online">🌐 متاح رقمياً</span>
+          </div>
+          <h3>شهادة الميلاد</h3>
+          <p>وثيقة رسمية تُثبت واقعة الولادة وبيانات الهوية. تُسلَّم بعدة نسخ حسب الطلب.</p>
+          <strong style="font-size:13px;color:var(--primary-dark);">الوثائق المطلوبة:</strong>
+          <ul class="docs-list">
+            <li>بطاقة التعريف الوطنية</li>
+            <li>دفتر العائلة (عند الاقتضاء)</li>
+          </ul>
+          <a href="https://etatcivil.interieur.gov.dz/" target="_blank" rel="noopener" class="card-link-btn">🌐 طلب رقمي</a>
+        </div>
+
+        <!-- شهادة الإقامة -->
+        <div class="civil-card available">
+          <div class="civil-card-top">
+            <span class="civil-card-icon">🏠</span>
+            <span class="status-badge available">✓ متاح حضورياً</span>
+          </div>
           <h3>شهادة الإقامة</h3>
-          <p>قريبا سيتم توفير الخدمة الرقمية، ويمكن حاليا الاستفسار لدى المصلحة المختصة.</p>
-        </article>
+          <p>تُثبت مكان إقامة المواطن الفعلي وتُستخدم في كثير من الإجراءات الإدارية والبنكية.</p>
+          <strong style="font-size:13px;color:var(--primary-dark);">الوثائق المطلوبة:</strong>
+          <ul class="docs-list">
+            <li>بطاقة التعريف الوطنية سارية المفعول</li>
+            <li>عقد الإيجار أو وثيقة تثبت الإقامة</li>
+            <li>فاتورة كهرباء أو ماء حديثة</li>
+          </ul>
+        </div>
 
-        <article class="card service-card">
-          <span class="card-icon">03</span>
+        <!-- عقد الزواج -->
+        <div class="civil-card available">
+          <div class="civil-card-top">
+            <span class="civil-card-icon">💍</span>
+            <span class="status-badge available">✓ متاح حضورياً</span>
+          </div>
           <h3>عقد الزواج</h3>
-          <p>معلومات حول إجراءات عقود الزواج والوثائق المطلوبة داخل البلدية.</p>
-        </article>
+          <p>تسجيل عقد الزواج في سجلات الحالة المدنية وتسليم نسخ رسمية للزوجين.</p>
+          <strong style="font-size:13px;color:var(--primary-dark);">الوثائق المطلوبة:</strong>
+          <ul class="docs-list">
+            <li>بطاقة التعريف الوطنية للطرفين</li>
+            <li>شهادة الميلاد الكاملة (النوع الثاني)</li>
+            <li>شهادة إقامة حديثة</li>
+            <li>شهادة طبية من طبيب معتمد</li>
+            <li>موافقة الولي (للمرأة)</li>
+          </ul>
+        </div>
+
+        <!-- عقد الوفاة -->
+        <div class="civil-card available">
+          <div class="civil-card-top">
+            <span class="civil-card-icon">📜</span>
+            <span class="status-badge available">✓ متاح حضورياً</span>
+          </div>
+          <h3>وثيقة الوفاة</h3>
+          <p>تسجيل واقعة الوفاة وتسليم شهادة الوفاة الرسمية لأفراد الأسرة.</p>
+          <strong style="font-size:13px;color:var(--primary-dark);">الوثائق المطلوبة:</strong>
+          <ul class="docs-list">
+            <li>تقرير طبي يُثبت الوفاة</li>
+            <li>بطاقة تعريف المتوفى</li>
+            <li>بطاقة تعريف المُصرِّح</li>
+            <li>دفتر العائلة</li>
+          </ul>
+        </div>
+
+        <!-- نسخة من سجل الحالة المدنية -->
+        <div class="civil-card available">
+          <div class="civil-card-top">
+            <span class="civil-card-icon">📂</span>
+            <span class="status-badge available">✓ متاح حضورياً</span>
+          </div>
+          <h3>مستخرج سجل الحالة المدنية</h3>
+          <p>نسخ رسمية من وثائق الحالة المدنية (الميلاد – الزواج – الطلاق – الوفاة) لأغراض إدارية وقانونية.</p>
+          <strong style="font-size:13px;color:var(--primary-dark);">الوثائق المطلوبة:</strong>
+          <ul class="docs-list">
+            <li>بطاقة التعريف الوطنية</li>
+            <li>تحديد نوع الوثيقة والسنة</li>
+            <li>توكيل رسمي في حالة الاستئناف عن الغير</li>
+          </ul>
+        </div>
+
+        <!-- إصلاح الحالة المدنية -->
+        <div class="civil-card info">
+          <div class="civil-card-top">
+            <span class="civil-card-icon">✏️</span>
+            <span class="status-badge coming">📌 بالمصلحة</span>
+          </div>
+          <h3>تصحيح الحالة المدنية</h3>
+          <p>تصحيح الأخطاء الواردة في وثائق الحالة المدنية عبر الإجراءات الإدارية أو القضائية المناسبة.</p>
+          <strong style="font-size:13px;color:var(--primary-dark);">الوثائق المطلوبة:</strong>
+          <ul class="docs-list">
+            <li>طلب التصحيح مكتوباً</li>
+            <li>الوثيقة المراد تصحيحها</li>
+            <li>وثائق داعمة تُثبت صحة المعلومة</li>
+            <li>قرار قضائي (في الحالات المعقدة)</li>
+          </ul>
+        </div>
+
       </div>
     </section>
 
-    <section class="section news-section">
+    <!-- ===== HOURS ===== -->
+    <section class="section">
       <div class="section-heading">
-        <span>إرشادات</span>
-        <h2>قبل طلب الوثائق</h2>
+        <span>مواعيد الاستقبال</span>
+        <h2>ساعات العمل</h2>
+      </div>
+      <div class="hours-grid">
+        <div class="hour-card">
+          <div class="day">الأحد – الاثنين</div>
+          <div class="time">08:00 – 12:00</div>
+          <div class="note">وبعد الزوال 13:30 – 16:00</div>
+        </div>
+        <div class="hour-card">
+          <div class="day">الثلاثاء – الأربعاء</div>
+          <div class="time">08:00 – 12:00</div>
+          <div class="note">وبعد الزوال 13:30 – 16:00</div>
+        </div>
+        <div class="hour-card">
+          <div class="day">الخميس</div>
+          <div class="time">08:00 – 12:00</div>
+          <div class="note">توقف بعد الزوال</div>
+        </div>
+        <div class="hour-card">
+          <div class="day">الجمعة – السبت</div>
+          <div class="time">مغلق</div>
+          <div class="note">عطلة أسبوعية</div>
+        </div>
       </div>
 
-      <div class="cards news-grid">
-        <article class="card news-card">
-          <time datetime="2026-05-03">03 ماي 2026</time>
-          <h3>تحضير المعلومات</h3>
-          <p>يرجى التأكد من صحة المعلومات الشخصية قبل طلب أي وثيقة إدارية.</p>
-        </article>
+      <div class="info-strip" style="margin-top:24px;">
+        <div class="info-strip-icon">💡</div>
+        <p>جميع وثائق الحالة المدنية مجانية بالكامل. لا تُقبل أي مبالغ مالية من الموظفين لأي غرض كان. في حال تعرضت لأي مشكلة، تواصل مباشرة مع رئيس المصلحة.</p>
+      </div>
+    </section>
 
-        <article class="card news-card">
-          <time datetime="2026-05-03">03 ماي 2026</time>
-          <h3>الاستفسار الإداري</h3>
-          <p>يمكن التواصل مع البلدية لمعرفة تفاصيل الإجراءات والمواعيد المتاحة.</p>
-        </article>
+    <!-- ===== FAQ ===== -->
+    <section class="section">
+      <div class="section-heading">
+        <span>أسئلة شائعة</span>
+        <h2>ماذا يسألنا المواطنون؟</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            كم نسخة من شهادة الميلاد يمكن طلبها؟
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-a">يمكن طلب أي عدد من النسخ دون قيود، وجميعها مجانية. يُستحسن طلب 3 نسخ على الأقل للاستخدامات المختلفة.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            كيف يمكن استخراج وثيقة لشخص متوفى؟
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-a">يحق لأي من الورثة المباشرين طلب وثائق المتوفى مع إبراز بطاقة تعريفه الخاصة وما يُثبت صلة القرابة (دفتر عائلة).</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            هل يمكن لشخص آخر استخراج الوثيقة نيابة عني؟
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-a">نعم، يمكن توكيل شخص بتوكيل رسمي من مكتب التوثيق، أو يمكن للأسرة المباشرة (الزوج/الزوجة/الأبناء) الاستخراج بدون توكيل.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            ماذا أفعل إذا كان اسمي مكتوباً بصورة خاطئة في شهادة الميلاد؟
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-a">تراجع مصلحة الحالة المدنية بطلب تصحيح مكتوب مرفقاً بوثائق داعمة. الأخطاء المادية البسيطة تُصحَّح إدارياً، أما التغييرات الجوهرية فتستوجب قراراً قضائياً.</div>
+        </div>
       </div>
     </section>
   </main>
@@ -95,5 +555,10 @@
   </footer>
 
   <script src="header-loader.js"></script>
+  <script>
+    function toggleFaq(el) {
+      el.closest('.faq-item').classList.toggle('open');
+    }
+  </script>
 </body>
 </html>
