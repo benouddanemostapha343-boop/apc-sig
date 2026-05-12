@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اتصل بنا | بلدية سيق</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-top: 40px;
+    }
+
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(7,53,35,0.05);
+    }
+
+    .contact-item-icon {
+      display: inline-grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      flex: 0 0 auto;
+      border-radius: 10px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-size: 22px;
+    }
+
+    .contact-item-text h4 {
+      margin: 0 0 4px;
+      color: var(--primary-dark);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .contact-item-text p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .contact-item-text a {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .contact-form-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 32px;
+      box-shadow: 0 8px 24px rgba(7,53,35,0.07);
+    }
+
+    .contact-form-card h3 {
+      margin: 0 0 24px;
+      color: var(--primary-dark);
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface-muted);
+      color: var(--ink);
+      font-family: var(--font-ar);
+      font-size: 15px;
+      outline: none;
+      transition: border-color var(--fast), box-shadow var(--fast);
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(7,95,59,0.1);
+      background: #fff;
+    }
+
+    .form-group textarea {
+      height: 130px;
+      resize: vertical;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .btn-submit {
+      width: 100%;
+      min-height: 50px;
+      padding: 0 24px;
+      border: none;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #fff;
+      font-family: var(--font-ar);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background var(--fast), transform var(--fast), box-shadow var(--fast);
+    }
+
+    .btn-submit:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(7,53,35,0.2);
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+
+    .map-section {
+      margin-top: 60px;
+    }
+
+    .map-container {
+      width: 100%;
+      height: 320px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      box-shadow: 0 8px 24px rgba(7,53,35,0.08);
+    }
+
+    .map-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .success-msg {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      background: var(--primary-soft);
+      border: 1px solid rgba(7,95,59,0.2);
+      border-radius: 8px;
+      color: var(--primary-dark);
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .success-msg.show {
+      display: flex;
+    }
+
+    @media (max-width: 768px) {
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .contact-form-card {
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <span class="badge">تواصل معنا</span>
+        <h2>اتصل بنا</h2>
+        <p>نحن هنا للإجابة على استفساراتكم ومساعدتكم. تواصلوا مع بلدية سيق عبر القنوات الرسمية.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading">
+        <span>معلومات التواصل</span>
+        <h2>كيف تصل إلينا؟</h2>
+      </div>
+
+      <div class="contact-grid">
+
+        <!-- معلومات الاتصال -->
+        <div class="contact-info">
+
+          <div class="contact-item">
+            <div class="contact-item-icon">📍</div>
+            <div class="contact-item-text">
+              <h4>العنوان</h4>
+              <p>بلدية سيق، ولاية معسكر<br>الجزائر</p>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-item-icon">📞</div>
+            <div class="contact-item-text">
+              <h4>الهاتف</h4>
+              <p><a href="tel:+213455000000">045 50 00 00</a></p>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-item-icon">📠</div>
+            <div class="contact-item-text">
+              <h4>الفاكس</h4>
+              <p>045 50 00 01</p>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-item-icon">✉️</div>
+            <div class="contact-item-text">
+              <h4>البريد الإلكتروني</h4>
+              <p><a href="mailto:contact@commune-sig.dz">contact@commune-sig.dz</a></p>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-item-icon">🕐</div>
+            <div class="contact-item-text">
+              <h4>ساعات العمل</h4>
+              <p>الأحد – الخميس<br>08:00 – 16:00</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- نموذج الاتصال -->
+        <div class="contact-form-card">
+          <h3>أرسل رسالتك</h3>
+
+          <div class="success-msg" id="successMsg">
+            ✅ تم إرسال رسالتك بنجاح، سنتواصل معك قريباً.
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">الاسم الكامل</label>
+              <input type="text" id="name" placeholder="أدخل اسمك">
+            </div>
+            <div class="form-group">
+              <label for="phone">رقم الهاتف</label>
+              <input type="tel" id="phone" placeholder="06 XX XX XX XX">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">البريد الإلكتروني</label>
+            <input type="email" id="email" placeholder="example@email.com">
+          </div>
+
+          <div class="form-group">
+            <label for="subject">الموضوع</label>
+            <select id="subject">
+              <option value="">-- اختر الموضوع --</option>
+              <option>البناء والتعمير</option>
+              <option>الاستثمار</option>
+              <option>أملاك البلدية</option>
+              <option>الشؤون الاجتماعية</option>
+              <option>الحالة المدنية</option>
+              <option>استفسار عام</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="message">الرسالة</label>
+            <textarea id="message" placeholder="اكتب رسالتك هنا..."></textarea>
+          </div>
+
+          <button class="btn-submit" onclick="sendMessage()">إرسال الرسالة</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- الخريطة -->
+    <section class="section map-section">
+      <div class="section-heading">
+        <span>الموقع الجغرافي</span>
+        <h2>موقعنا على الخريطة</h2>
+      </div>
+      <div class="map-container">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13234.5!2d-0.1836!3d35.5289!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd7886b0b0b0b0b0%3A0x0!2sSig%2C+Algeria!5e0!3m2!1sar!2sdz!4v1"
+          allowfullscreen
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>جميع الحقوق محفوظة © بلدية سيق</p>
+  </footer>
+
+  <script src="header-loader.js"></script>
+  <script>
+    function sendMessage() {
+      const name = document.getElementById('name').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      if (!name || !message) {
+        alert('يرجى ملء الاسم والرسالة على الأقل.');
+        return;
+      }
+
+      // إظهار رسالة النجاح
+      const msg = document.getElementById('successMsg');
+      msg.classList.add('show');
+
+      // تفريغ النموذج
+      document.getElementById('name').value = '';
+      document.getElementById('phone').value = '';
+      document.getElementById('email').value = '';
+      document.getElementById('subject').value = '';
+      document.getElementById('message').value = '';
+
+      // إخفاء الرسالة بعد 5 ثوان
+      setTimeout(() => msg.classList.remove('show'), 5000);
+    }
+  </script>
+</body>
+</html>
