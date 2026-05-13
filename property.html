@@ -8,92 +8,395 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-</head>
+  <style>
+    .prop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 32px;
+    }
 
+    .prop-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: 0 4px 16px rgba(7,53,35,0.06);
+      transition: transform var(--fast), box-shadow var(--fast);
+    }
+
+    .prop-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 40px rgba(7,53,35,0.12);
+    }
+
+    .prop-card-icon {
+      display: inline-grid;
+      place-items: center;
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: var(--primary-soft);
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+
+    .prop-card h3 {
+      margin: 0 0 10px;
+      color: var(--primary-dark);
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .prop-card p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .docs-list {
+      list-style: none; margin: 0; padding: 0;
+      display: flex; flex-direction: column; gap: 7px;
+    }
+    .docs-list li {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 13.5px; color: var(--ink); line-height: 1.6;
+    }
+    .docs-list li::before {
+      content: "✓"; flex: 0 0 auto;
+      display: inline-grid; place-items: center;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--primary-soft); color: var(--primary);
+      font-size: 10px; font-weight: 800; margin-top: 2px;
+    }
+
+    .tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;
+      background: var(--accent-soft); color: #7a5a18;
+      border: 1px solid rgba(185,151,58,0.25); margin-top: 14px;
+    }
+
+    .prop-types {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .prop-type-item {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px 16px;
+      text-align: center;
+      transition: transform var(--fast), background var(--fast);
+      cursor: default;
+    }
+
+    .prop-type-item:hover {
+      background: var(--primary-soft);
+      transform: translateY(-3px);
+    }
+
+    .prop-type-item .icon { font-size: 32px; margin-bottom: 10px; }
+    .prop-type-item h4 { margin: 0; font-size: 13px; font-weight: 700; color: var(--primary-dark); }
+
+    .process-timeline {
+      background: var(--primary-dark);
+      border-radius: 18px;
+      padding: 48px;
+      margin-top: 32px;
+    }
+
+    .process-timeline h3 {
+      margin: 0 0 36px;
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .timeline-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 24px;
+    }
+
+    .tl-step {
+      text-align: center;
+    }
+
+    .tl-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      font-size: 18px; font-weight: 800; margin-bottom: 12px;
+    }
+
+    .tl-step h4 { margin: 0 0 6px; font-size: 14px; font-weight: 700; color: #fff; }
+    .tl-step p { margin: 0; font-size: 12.5px; color: rgba(255,255,255,0.7); line-height: 1.7; }
+
+    .alert-box {
+      display: flex; gap: 16px; padding: 20px 24px;
+      background: #fffbef; border: 1px solid rgba(185,151,58,0.35);
+      border-right: 5px solid var(--accent); border-radius: 10px; margin-top: 32px;
+    }
+    .alert-box p { margin: 0; font-size: 14px; color: var(--ink); line-height: 1.8; }
+    .alert-box strong { color: var(--primary-dark); }
+
+    .faq-list { display: flex; flex-direction: column; gap: 12px; margin-top: 32px; }
+    .faq-item { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+    .faq-q { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; cursor: pointer; font-size: 15px; font-weight: 700; color: var(--primary-dark); gap: 12px; user-select: none; }
+    .faq-q:hover { background: var(--primary-soft); }
+    .faq-toggle { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; background: var(--primary-soft); color: var(--primary); display: inline-grid; place-items: center; font-size: 16px; transition: transform var(--fast), background var(--fast); }
+    .faq-item.open .faq-toggle { transform: rotate(45deg); background: var(--primary); color: #fff; }
+    .faq-a { display: none; padding: 0 22px 18px; font-size: 14px; color: var(--muted); line-height: 1.85; }
+    .faq-item.open .faq-a { display: block; }
+
+    .cta-banner { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 18px; padding: 44px 48px; margin-top: 64px; display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap; }
+    .cta-banner h3 { margin: 0 0 8px; color: #fff; font-size: 22px; font-weight: 800; }
+    .cta-banner p { margin: 0; color: rgba(255,255,255,0.78); font-size: 15px; }
+    .cta-actions { display: flex; gap: 12px; flex-wrap: wrap; flex: 0 0 auto; }
+    .btn-white { display: inline-flex; align-items: center; gap: 8px; padding: 13px 26px; border-radius: 9px; background: #fff; color: var(--primary-dark); font-weight: 800; font-size: 15px; font-family: var(--font-ar); border: none; cursor: pointer; transition: transform var(--fast), box-shadow var(--fast); }
+    .btn-white:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,0.18); }
+
+    @media (max-width: 768px) {
+      .process-timeline { padding: 28px 22px; }
+      .cta-banner { padding: 28px 22px; flex-direction: column; }
+      .cta-actions { width: 100%; }
+      .btn-white { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
 <body>
   <div id="header-placeholder"></div>
-
   <main>
     <section class="hero">
       <div class="hero-content">
         <span class="badge">مصالح البلدية</span>
-        <h2>أملاك البلدية</h2>
-        <p>متابعة الممتلكات البلدية، تسيير الملفات العقارية، وتقديم الإرشادات الإدارية الخاصة بالأملاك المحلية.</p>
+        <h2>مصلحة أملاك البلدية</h2>
+        <p>تسيير الممتلكات البلدية، متابعة الملفات العقارية، منح الترخيصات، وتقديم الإرشادات الإدارية للمواطنين.</p>
         <div class="hero-actions">
-          <a href="#property-services" class="btn primary">عرض الخدمات</a>
+          <a href="#prop-services" class="btn primary">عرض الخدمات</a>
           <a href="contact.html" class="btn secondary">طلب معلومات</a>
         </div>
       </div>
     </section>
 
-    <section class="quick-stats" aria-label="معلومات سريعة">
-      <div>
-        <strong>01</strong>
-        <span>مصلحة مختصة</span>
+    <section class="quick-stats">
+      <div><strong>05</strong><span>خدمات إدارية</span></div>
+      <div><strong>01</strong><span>مصلحة مختصة</span></div>
+      <div><strong>قانوني</strong><span>إطار تنظيمي دقيق</span></div>
+    </section>
+
+    <!-- أنواع الأملاك -->
+    <section class="section">
+      <div class="section-heading">
+        <span>تعريف</span>
+        <h2>أنواع الأملاك البلدية</h2>
       </div>
-      <div>
-        <strong>03</strong>
-        <span>محاور رئيسية</span>
-      </div>
-      <div>
-        <strong>2026</strong>
-        <span>متابعة رقمية</span>
+      <div class="prop-types">
+        <div class="prop-type-item">
+          <div class="icon">🏢</div>
+          <h4>مباني إدارية</h4>
+        </div>
+        <div class="prop-type-item">
+          <div class="icon">🏫</div>
+          <h4>مرافق تعليمية</h4>
+        </div>
+        <div class="prop-type-item">
+          <div class="icon">🌳</div>
+          <h4>الفضاءات الخضراء</h4>
+        </div>
+        <div class="prop-type-item">
+          <div class="icon">🏪</div>
+          <h4>المحلات التجارية</h4>
+        </div>
+        <div class="prop-type-item">
+          <div class="icon">🏟️</div>
+          <h4>الملاعب والفضاءات</h4>
+        </div>
+        <div class="prop-type-item">
+          <div class="icon">🚰</div>
+          <h4>البنية التحتية</h4>
+        </div>
       </div>
     </section>
 
-    <section class="section" id="property-services">
+    <!-- الخدمات -->
+    <section class="section" id="prop-services">
       <div class="section-heading">
-        <span>أملاك البلدية</span>
-        <h2>خدمات موجهة للتسيير والمتابعة</h2>
+        <span>الخدمات الإدارية</span>
+        <h2>خدمات مصلحة الأملاك</h2>
       </div>
+      <div class="prop-grid">
 
-      <div class="cards service-grid">
-        <article class="card service-card">
-          <span class="card-icon">01</span>
-          <h3>تسيير الممتلكات</h3>
-          <p>متابعة الأملاك البلدية وتنظيم المعلومات المتعلقة بها وفق الإجراءات الإدارية المعمول بها.</p>
-        </article>
+        <div class="prop-card">
+          <div class="prop-card-icon">📋</div>
+          <h3>كراء الأملاك البلدية</h3>
+          <p>طلب استئجار محلات تجارية أو أراضي بلدية وفق دفتر الشروط والإجراءات القانونية المعمول بها.</p>
+          <ul class="docs-list">
+            <li>طلب مكتوب موجّه لرئيس البلدية</li>
+            <li>بطاقة التعريف الوطنية</li>
+            <li>السجل التجاري أو بطاقة الحرفي</li>
+            <li>إثبات النشاط أو مشروع الاستغلال</li>
+          </ul>
+          <span class="tag">⏱ 30 يوم</span>
+        </div>
 
-        <article class="card service-card">
-          <span class="card-icon">02</span>
-          <h3>الملفات العقارية</h3>
-          <p>استقبال وتوجيه المواطنين بخصوص الملفات المرتبطة بالعقار والممتلكات المحلية.</p>
-        </article>
+        <div class="prop-card">
+          <div class="prop-card-icon">🤝</div>
+          <h3>التنازل عن الأملاك</h3>
+          <p>معالجة طلبات التنازل عن الأملاك البلدية وفق إجراءات المجلس الشعبي البلدي والتشريع الساري.</p>
+          <ul class="docs-list">
+            <li>طلب التنازل المكتوب مع تعليل الطلب</li>
+            <li>بطاقة التعريف الوطنية</li>
+            <li>كشف بالأملاك المطلوب التنازل عنها</li>
+            <li>عقد الإيجار الحالي (إن وُجد)</li>
+          </ul>
+          <span class="tag">📌 قرار المجلس</span>
+        </div>
 
-        <article class="card service-card">
-          <span class="card-icon">03</span>
-          <h3>الإرشاد الإداري</h3>
-          <p>تقديم معلومات أولية حول الوثائق المطلوبة ومسارات المتابعة لدى المصالح المختصة.</p>
-        </article>
+        <div class="prop-card">
+          <div class="prop-card-icon">📝</div>
+          <h3>تجديد عقود الكراء</h3>
+          <p>تجديد عقود استئجار الأملاك البلدية وتحيين بياناتها وفق الشروط الإدارية المحددة.</p>
+          <ul class="docs-list">
+            <li>عقد الكراء الأصلي</li>
+            <li>بطاقة التعريف الوطنية</li>
+            <li>كشف بسداد مستحقات الكراء</li>
+            <li>طلب تجديد مكتوب</li>
+          </ul>
+          <span class="tag">⏱ 15 يوم</span>
+        </div>
+
+        <div class="prop-card">
+          <div class="prop-card-icon">🔍</div>
+          <h3>الاستعلام عن الأملاك</h3>
+          <p>الحصول على معلومات حول الوضعية القانونية للأملاك البلدية والاستخدامات المسموح بها.</p>
+          <ul class="docs-list">
+            <li>طلب الاستعلام المكتوب</li>
+            <li>بطاقة التعريف الوطنية</li>
+            <li>تحديد العقار أو المحل موضوع الاستعلام</li>
+          </ul>
+          <span class="tag">⏱ 7 أيام</span>
+        </div>
+
+        <div class="prop-card">
+          <div class="prop-card-icon">⚠️</div>
+          <h3>التبليغ عن التعديات</h3>
+          <p>الإبلاغ عن أي تعدٍّ أو استخدام غير مشروع للممتلكات البلدية العامة.</p>
+          <ul class="docs-list">
+            <li>تقرير مكتوب يصف التعدي</li>
+            <li>صور فوتوغرافية إن أمكن</li>
+            <li>بيانات الشاهد أو المُبلِّغ</li>
+            <li>تحديد موقع التعدي</li>
+          </ul>
+          <span class="tag">🚨 معالجة فورية</span>
+        </div>
+
+        <div class="prop-card">
+          <div class="prop-card-icon">🗂️</div>
+          <h3>الإرشاد الإداري للعقار</h3>
+          <p>توجيه المواطنين حول الإجراءات المتعلقة بالأملاك والعقارات المتنازع عليها أو مجهولة الوضعية.</p>
+          <ul class="docs-list">
+            <li>وصف الوضعية بالتفصيل</li>
+            <li>الوثائق المتوفرة لديك</li>
+            <li>التعريف بالعقار الموقع والمساحة</li>
+          </ul>
+          <span class="tag">💬 استشارة مجانية</span>
+        </div>
+
       </div>
     </section>
 
-    <section class="section news-section">
-      <div class="section-heading">
-        <span>معلومات</span>
-        <h2>إرشادات للمواطن</h2>
+    <!-- مراحل الطلب -->
+    <section class="section">
+      <div class="process-timeline">
+        <h3>🔄 مراحل معالجة طلب الكراء</h3>
+        <div class="timeline-steps">
+          <div class="tl-step">
+            <div class="tl-num">01</div>
+            <h4>إيداع الطلب</h4>
+            <p>تقديم الملف لدى مصلحة الأملاك باستقبال النافذة المختصة.</p>
+          </div>
+          <div class="tl-step">
+            <div class="tl-num">02</div>
+            <h4>الفحص الإداري</h4>
+            <p>التحقق من اكتمال الوثائق ومطابقة المطلوب للقوانين.</p>
+          </div>
+          <div class="tl-step">
+            <div class="tl-num">03</div>
+            <h4>عرض على اللجنة</h4>
+            <p>يُعرض الملف على لجنة الأملاك في البلدية للدراسة.</p>
+          </div>
+          <div class="tl-step">
+            <div class="tl-num">04</div>
+            <h4>قرار المجلس</h4>
+            <p>يُصادق المجلس الشعبي البلدي على الطلبات الكبرى.</p>
+          </div>
+          <div class="tl-step">
+            <div class="tl-num">05</div>
+            <h4>توقيع العقد</h4>
+            <p>إبرام عقد الكراء الرسمي وتسليم نسخ للطرفين.</p>
+          </div>
+        </div>
       </div>
+    </section>
 
-      <div class="cards news-grid">
-        <article class="card news-card">
-          <time datetime="2026-05-03">03 ماي 2026</time>
-          <h3>متابعة الطلبات</h3>
-          <p>يرجى التأكد من اكتمال الوثائق قبل إيداع أي ملف لدى المصلحة المختصة.</p>
-        </article>
+    <section class="section">
+      <div class="alert-box">
+        <div style="font-size:24px;flex:0 0 auto">⚠️</div>
+        <div>
+          <p><strong>تنبيه قانوني:</strong> يُعدّ استغلال الأملاك البلدية دون عقد رسمي تعدياً يستوجب الإخلاء الفوري والغرامة المالية. احرص على تجديد عقدك قبل انتهاء صلاحيته.</p>
+        </div>
+      </div>
+    </section>
 
-        <article class="card news-card">
-          <time datetime="2026-05-03">03 ماي 2026</time>
-          <h3>استقبال المواطنين</h3>
-          <p>يمكن التواصل مع البلدية للاستفسار حول الإجراءات والمواعيد الإدارية المتاحة.</p>
-        </article>
+    <!-- FAQ -->
+    <section class="section">
+      <div class="section-heading">
+        <span>أسئلة شائعة</span>
+        <h2>ما يسأله المواطنون</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">كيف أعرف إن كان العقار الذي أستغله ملكاً للبلدية؟<span class="faq-toggle">+</span></div>
+          <div class="faq-a">يمكنك التوجه إلى مصلحة الأملاك طالباً الاستعلام عن وضعية العقار مع تقديم مخطط الموقع. ستُزودك المصلحة بالمعلومات القانونية اللازمة.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">هل يمكن تحويل عقد الكراء لشخص آخر؟<span class="faq-toggle">+</span></div>
+          <div class="faq-a">التحويل ممكن في حالات خاصة كالإرث أو الوفاة، ويستوجب الحصول على موافقة البلدية وإعداد عقد جديد.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">ما هو مدة عقود الكراء البلدي؟<span class="faq-toggle">+</span></div>
+          <div class="faq-a">تتراوح عادة بين سنة وثلاث سنوات قابلة للتجديد حسب طبيعة الملك والنشاط. بعض العقود طويلة الأمد تصل إلى 9 سنوات.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">هل يحق للبلدية فسخ عقد الكراء قبل انتهائه؟<span class="faq-toggle">+</span></div>
+          <div class="faq-a">نعم، في حالات محددة كعدم دفع الإيجار، مخالفة شروط العقد، أو الحاجة الضرورية للمرفق العام. يسبق ذلك إشعار قانوني.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="cta-banner">
+        <div>
+          <h3>استفسر عن أملاك البلدية</h3>
+          <p>للحصول على معلومات حول الأملاك المتاحة أو حول وضعية عقارك، تواصل معنا.</p>
+        </div>
+        <div class="cta-actions">
+          <a href="contact.html" class="btn-white">📞 اتصل بنا</a>
+        </div>
       </div>
     </section>
   </main>
 
-  <footer>
-    <p>جميع الحقوق محفوظة © بلدية سيق</p>
-  </footer>
-
+  <footer><p>جميع الحقوق محفوظة © بلدية سيق</p></footer>
   <script src="header-loader.js"></script>
+  <script>
+    function toggleFaq(el) { el.closest('.faq-item').classList.toggle('open'); }
+  </script>
 </body>
 </html>
