@@ -8,92 +8,460 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-</head>
+  <style>
+    .invest-hero-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+      margin-top: 32px;
+    }
 
+    .invest-stat-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 24px 20px;
+      text-align: center;
+      box-shadow: 0 4px 14px rgba(7,53,35,0.06);
+    }
+
+    .invest-stat-card .num {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .invest-stat-card .label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .sectors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 22px;
+      margin-top: 32px;
+    }
+
+    .sector-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 26px;
+      transition: transform var(--fast), box-shadow var(--fast);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sector-card::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform var(--fast);
+    }
+
+    .sector-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 38px rgba(7,53,35,0.12);
+    }
+
+    .sector-card:hover::after { transform: scaleX(1); }
+
+    .sector-icon {
+      font-size: 36px;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .sector-card h3 {
+      margin: 0 0 10px;
+      color: var(--primary-dark);
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .sector-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height: 1.8;
+    }
+
+    .steps-dark {
+      background: var(--primary-dark);
+      border-radius: 18px;
+      padding: 48px;
+      margin-top: 32px;
+      color: #fff;
+    }
+
+    .steps-dark h3 {
+      margin: 0 0 36px;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .steps-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .step-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      position: relative;
+    }
+
+    .step-row:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: 19px;
+      top: 48px;
+      width: 2px;
+      height: calc(100% - 16px);
+      background: rgba(185,151,58,0.4);
+    }
+
+    .step-circle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      flex: 0 0 auto;
+      margin-top: 2px;
+    }
+
+    .step-body {
+      padding-bottom: 28px;
+    }
+
+    .step-body h4 {
+      margin: 0 0 6px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .step-body p {
+      margin: 0;
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.75;
+    }
+
+    .docs-section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 32px;
+      margin-top: 32px;
+    }
+
+    .docs-section h3 {
+      margin: 0 0 20px;
+      color: var(--primary-dark);
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .docs-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .doc-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--ink);
+      line-height: 1.6;
+      padding: 10px 14px;
+      background: var(--surface-muted);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .doc-item::before {
+      content: "📎";
+      flex: 0 0 auto;
+      font-size: 14px;
+    }
+
+    .advantages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 32px;
+    }
+
+    .adv-card {
+      background: var(--primary-soft);
+      border: 1px solid rgba(7,95,59,0.15);
+      border-radius: 12px;
+      padding: 22px;
+      text-align: center;
+    }
+
+    .adv-card .adv-icon { font-size: 32px; margin-bottom: 12px; }
+
+    .adv-card h4 {
+      margin: 0 0 6px;
+      color: var(--primary-dark);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .adv-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.7;
+    }
+
+    .faq-list { display: flex; flex-direction: column; gap: 12px; margin-top: 32px; }
+    .faq-item { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+    .faq-q { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; cursor: pointer; font-size: 15px; font-weight: 700; color: var(--primary-dark); gap: 12px; user-select: none; }
+    .faq-q:hover { background: var(--primary-soft); }
+    .faq-toggle { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; background: var(--primary-soft); color: var(--primary); display: inline-grid; place-items: center; font-size: 16px; transition: transform var(--fast), background var(--fast); }
+    .faq-item.open .faq-toggle { transform: rotate(45deg); background: var(--primary); color: #fff; }
+    .faq-a { display: none; padding: 0 22px 18px; font-size: 14px; color: var(--muted); line-height: 1.85; }
+    .faq-item.open .faq-a { display: block; }
+
+    .cta-banner { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 18px; padding: 44px 48px; margin-top: 64px; display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap; }
+    .cta-banner h3 { margin: 0 0 8px; color: #fff; font-size: 22px; font-weight: 800; }
+    .cta-banner p { margin: 0; color: rgba(255,255,255,0.78); font-size: 15px; }
+    .cta-actions { display: flex; gap: 12px; flex-wrap: wrap; flex: 0 0 auto; }
+    .btn-white { display: inline-flex; align-items: center; gap: 8px; padding: 13px 26px; border-radius: 9px; background: #fff; color: var(--primary-dark); font-weight: 800; font-size: 15px; font-family: var(--font-ar); border: none; cursor: pointer; transition: transform var(--fast), box-shadow var(--fast); }
+    .btn-white:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,0.18); }
+
+    @media (max-width: 768px) {
+      .steps-dark { padding: 28px 22px; }
+      .docs-2col { grid-template-columns: 1fr; }
+      .cta-banner { padding: 28px 22px; flex-direction: column; }
+      .cta-actions { width: 100%; }
+      .btn-white { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
 <body>
   <div id="header-placeholder"></div>
-
   <main>
     <section class="hero">
       <div class="hero-content">
         <span class="badge">مصالح البلدية</span>
         <h2>مصلحة الاستثمار</h2>
-        <p>مرافقة المستثمرين، تشجيع الاستثمار المحلي، وتقديم المعلومات حول فرص المشاريع داخل إقليم البلدية.</p>
+        <p>مرافقة المستثمرين المحليين، تسهيل مسارات المشاريع، وتقديم المعلومات اللازمة حول فرص الاستثمار في إقليم بلدية سيق.</p>
         <div class="hero-actions">
-          <a href="#investment-services" class="btn primary">عرض الخدمات</a>
-          <a href="contact.html" class="btn secondary">طلب معلومات</a>
+          <a href="#sectors" class="btn primary">القطاعات المتاحة</a>
+          <a href="contact.html" class="btn secondary">طلب مرافقة</a>
         </div>
       </div>
     </section>
 
-    <section class="quick-stats" aria-label="معلومات سريعة">
-      <div>
-        <strong>03</strong>
-        <span>محاور استثمار</span>
+    <section class="quick-stats">
+      <div><strong>05+</strong><span>قطاعات استثمارية</span></div>
+      <div><strong>01</strong><span>شباك توجيه</span></div>
+      <div><strong>مجاني</strong><span>الإرشاد والمرافقة</span></div>
+    </section>
+
+    <!-- مزايا الاستثمار -->
+    <section class="section">
+      <div class="section-heading">
+        <span>لماذا سيق؟</span>
+        <h2>مزايا الاستثمار في البلدية</h2>
       </div>
-      <div>
-        <strong>01</strong>
-        <span>مصلحة مرافقة</span>
-      </div>
-      <div>
-        <strong>2026</strong>
-        <span>توجيه رقمي</span>
+      <div class="advantages-grid">
+        <div class="adv-card">
+          <div class="adv-icon">🌾</div>
+          <h4>ثروة زراعية</h4>
+          <p>أراضي زراعية خصبة ومشاريع فلاحية واعدة في سهل الغريس.</p>
+        </div>
+        <div class="adv-card">
+          <div class="adv-icon">🚗</div>
+          <h4>موقع استراتيجي</h4>
+          <p>موقع محوري بين معسكر وتلمسان على الطريق الوطني الرئيسي.</p>
+        </div>
+        <div class="adv-card">
+          <div class="adv-icon">🏭</div>
+          <h4>مناطق نشاط</h4>
+          <p>مناطق نشاط صناعية وحرفية جاهزة لاستقبال المشاريع.</p>
+        </div>
+        <div class="adv-card">
+          <div class="adv-icon">👥</div>
+          <h4>يد عاملة محلية</h4>
+          <p>كفاءات شابة ومتعلمة جاهزة للانخراط في مشاريع التنمية.</p>
+        </div>
+        <div class="adv-card">
+          <div class="adv-icon">🤝</div>
+          <h4>دعم إداري</h4>
+          <p>مرافقة إدارية فعلية من البلدية طوال مراحل المشروع.</p>
+        </div>
       </div>
     </section>
 
-    <section class="section" id="investment-services">
+    <!-- قطاعات الاستثمار -->
+    <section class="section" id="sectors">
       <div class="section-heading">
-        <span>الاستثمار</span>
-        <h2>مرافقة المشاريع وفرص التنمية المحلية</h2>
+        <span>فرص الاستثمار</span>
+        <h2>القطاعات الاستثمارية المتاحة</h2>
       </div>
-
-      <div class="cards service-grid">
-        <article class="card service-card">
-          <span class="card-icon">01</span>
-          <h3>تشجيع الاستثمار المحلي</h3>
-          <p>تقديم إرشادات أولية حول فرص الاستثمار والمجالات المتاحة على المستوى المحلي.</p>
-        </article>
-
-        <article class="card service-card">
-          <span class="card-icon">02</span>
-          <h3>مرافقة المستثمرين</h3>
-          <p>توجيه أصحاب المشاريع نحو المصالح المختصة ومتابعة المسارات الإدارية المناسبة.</p>
-        </article>
-
-        <article class="card service-card">
-          <span class="card-icon">03</span>
-          <h3>معلومات حول المشاريع</h3>
-          <p>توفير معلومات إدارية حول المشاريع المحلية والوثائق المطلوبة حسب طبيعة النشاط.</p>
-        </article>
+      <div class="sectors-grid">
+        <div class="sector-card">
+          <span class="sector-icon">🌾</span>
+          <h3>الفلاحة والأغذية</h3>
+          <p>مشاريع الزراعة المحمية، تحويل المنتجات الزراعية، تربية الماشية والدواجن، والصناعات الغذائية.</p>
+        </div>
+        <div class="sector-card">
+          <span class="sector-icon">🏭</span>
+          <h3>الصناعة والحرف</h3>
+          <p>مشاريع الصناعة الخفيفة، الحرف التقليدية، ورش الإنتاج، والمؤسسات الصغيرة والمتوسطة.</p>
+        </div>
+        <div class="sector-card">
+          <span class="sector-icon">🏪</span>
+          <h3>التجارة والخدمات</h3>
+          <p>محلات التجزئة والجملة، الخدمات اللوجستية، التوزيع والتخزين.</p>
+        </div>
+        <div class="sector-card">
+          <span class="sector-icon">🏗️</span>
+          <h3>البناء والتهيئة</h3>
+          <p>مشاريع السكن، تهيئة المساحات، ومواد البناء ومستلزماته.</p>
+        </div>
+        <div class="sector-card">
+          <span class="sector-icon">🎓</span>
+          <h3>التعليم والتكوين</h3>
+          <p>مؤسسات التعليم الخاص، مراكز التكوين المهني، ومراكز الدعم التربوي.</p>
+        </div>
+        <div class="sector-card">
+          <span class="sector-icon">💊</span>
+          <h3>الصحة والرعاية</h3>
+          <p>عيادات خاصة، صيدليات، مراكز طبية متخصصة، ودور الرعاية الاجتماعية.</p>
+        </div>
       </div>
     </section>
 
-    <section class="section news-section">
-      <div class="section-heading">
-        <span>إرشادات</span>
-        <h2>معلومات للمستثمرين</h2>
+    <!-- خطوات إنجاز المشروع -->
+    <section class="section">
+      <div class="steps-dark">
+        <h3>📌 مراحل إنجاز مشروعك</h3>
+        <div class="steps-flow">
+          <div class="step-row">
+            <div class="step-circle">01</div>
+            <div class="step-body">
+              <h4>التواصل مع البلدية</h4>
+              <p>التوجه إلى مصلحة الاستثمار للحصول على معلومات أولية حول طبيعة المشروع والإجراءات المطلوبة.</p>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-circle">02</div>
+            <div class="step-body">
+              <h4>دراسة الجدوى</h4>
+              <p>إعداد دراسة جدوى اقتصادية ومالية للمشروع بمساعدة مكتب دراسات أو الوكالة الوطنية للدعم وتنمية المقاولاتية (ANADE).</p>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-circle">03</div>
+            <div class="step-body">
+              <h4>تجميع الملف الإداري</h4>
+              <p>تحضير الوثائق الإدارية المطلوبة وإيداع الملف لدى المصالح المختصة على المستوى المحلي والولائي.</p>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-circle">04</div>
+            <div class="step-body">
+              <h4>الحصول على التراخيص</h4>
+              <p>استكمال رخص النشاط، رخصة البناء (إن اقتضى الأمر)، وسجل التجارة من المصالح المعنية.</p>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-circle">05</div>
+            <div class="step-body">
+              <h4>انطلاق المشروع</h4>
+              <p>الشروع في الاستثمار مع متابعة دورية من طرف البلدية للتأكد من سير الأعمال وفق الإطار القانوني.</p>
+            </div>
+          </div>
+        </div>
       </div>
+    </section>
 
-      <div class="cards news-grid">
-        <article class="card news-card">
-          <time datetime="2026-05-03">03 ماي 2026</time>
-          <h3>تحضير ملف المشروع</h3>
-          <p>ينصح بتحضير عرض واضح للمشروع والوثائق الإدارية الأساسية قبل طلب المرافقة.</p>
-        </article>
+    <!-- الوثائق المطلوبة -->
+    <section class="section">
+      <div class="docs-section">
+        <h3>📋 الوثائق الأساسية لملف الاستثمار</h3>
+        <div class="docs-2col">
+          <div class="doc-item">بطاقة التعريف الوطنية للمستثمر</div>
+          <div class="doc-item">عرض تقديمي للمشروع (فكرة المشروع، الأهداف)</div>
+          <div class="doc-item">دراسة الجدوى الاقتصادية والمالية</div>
+          <div class="doc-item">السيرة الذاتية والخبرات المهنية</div>
+          <div class="doc-item">وثيقة إثبات مكان الإقامة</div>
+          <div class="doc-item">شهادة عدم الإفلاس (للمؤسسات)</div>
+          <div class="doc-item">مخطط الموقع المقترح للمشروع</div>
+          <div class="doc-item">كشف التمويل المتوقع (ذاتي/بنكي)</div>
+        </div>
+      </div>
+    </section>
 
-        <article class="card news-card">
-          <time datetime="2026-05-03">03 ماي 2026</time>
-          <h3>طلب التوجيه</h3>
-          <p>يمكن التواصل مع البلدية للحصول على توجيه أولي حول المصالح المعنية بالاستثمار.</p>
-        </article>
+    <!-- أسئلة شائعة -->
+    <section class="section">
+      <div class="section-heading">
+        <span>أسئلة شائعة</span>
+        <h2>أسئلة المستثمرين</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">هل توفر البلدية أراضي لمشاريع الاستثمار؟<span class="faq-toggle">+</span></div>
+          <div class="faq-a">يمكن للبلدية توجيهكم نحو الأراضي البلدية المتاحة أو نحو مديرية أملاك الدولة والوكالة الولائية للتسيير وتطوير مناطق الاستثمار (AGEDI).</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">هل يمكن الاستفادة من دعم الدولة للمشاريع الشبابية؟<span class="faq-toggle">+</span></div>
+          <div class="faq-a">نعم، عبر الأجهزة الوطنية مثل ANADE، ANSEJ، CNAC وBADR. تقوم البلدية بتوجيهك نحو الجهة المناسبة حسب طبيعة مشروعك وسنّك.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">ما هي آجال الرد على طلبات الاستثمار؟<span class="faq-toggle">+</span></div>
+          <div class="faq-a">الاستشارة الأولية فورية. أما الإجراءات الإدارية التفصيلية فتستغرق عادة بين 15 و60 يوماً حسب طبيعة المشروع والجهة المعنية.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">هل يجب أن يكون المستثمر من سكان البلدية؟<span class="faq-toggle">+</span></div>
+          <div class="faq-a">لا. الاستثمار مفتوح لجميع الجزائريين المقيمين داخل الوطن أو خارجه. كما يمكن للمستثمرين الأجانب الاستفسار وفق الإطار القانوني المحدد.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="cta-banner">
+        <div>
+          <h3>لديك مشروع استثماري؟</h3>
+          <p>فريق مصلحة الاستثمار جاهز لمرافقتك من الفكرة حتى الإنجاز.</p>
+        </div>
+        <div class="cta-actions">
+          <a href="contact.html" class="btn-white">📞 تواصل معنا</a>
+        </div>
       </div>
     </section>
   </main>
 
-  <footer>
-    <p>جميع الحقوق محفوظة © بلدية سيق</p>
-  </footer>
-
+  <footer><p>جميع الحقوق محفوظة © بلدية سيق</p></footer>
   <script src="header-loader.js"></script>
+  <script>
+    function toggleFaq(el) { el.closest('.faq-item').classList.toggle('open'); }
+  </script>
 </body>
 </html>
