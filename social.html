@@ -8,17 +8,178 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-</head>
+  <style>
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 32px;
+    }
 
+    .social-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: 0 4px 16px rgba(7,53,35,0.06);
+      transition: transform var(--fast), box-shadow var(--fast);
+    }
+
+    .social-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 40px rgba(7,53,35,0.12);
+    }
+
+    .social-card-icon {
+      display: inline-grid;
+      place-items: center;
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      background: var(--primary-soft);
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+
+    .social-card h3 {
+      margin: 0 0 10px;
+      color: var(--primary-dark);
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .social-card p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .docs-list {
+      list-style: none; margin: 0; padding: 0;
+      display: flex; flex-direction: column; gap: 7px;
+    }
+    .docs-list li {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 13.5px; color: var(--ink); line-height: 1.6;
+    }
+    .docs-list li::before {
+      content: "✓"; flex: 0 0 auto;
+      display: inline-grid; place-items: center;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--primary-soft); color: var(--primary);
+      font-size: 10px; font-weight: 800; margin-top: 2px;
+    }
+
+    .tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;
+      background: var(--accent-soft); color: #7a5a18;
+      border: 1px solid rgba(185,151,58,0.25); margin-top: 14px;
+    }
+
+    .beneficiaries-section {
+      background: linear-gradient(135deg, #f0fdf6, #e8f5ed);
+      border: 1px solid rgba(7,95,59,0.15);
+      border-radius: 18px;
+      padding: 48px;
+      margin-top: 32px;
+    }
+
+    .beneficiaries-section h3 {
+      margin: 0 0 32px;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    .beneficiaries-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    .ben-item {
+      background: #fff;
+      border: 1px solid rgba(7,95,59,0.12);
+      border-radius: 12px;
+      padding: 18px 16px;
+      text-align: center;
+    }
+
+    .ben-item .icon { font-size: 32px; margin-bottom: 10px; }
+    .ben-item h4 { margin: 0; font-size: 13.5px; font-weight: 700; color: var(--primary-dark); }
+
+    .programs-section {
+      background: var(--primary-dark);
+      border-radius: 18px;
+      padding: 48px;
+      margin-top: 32px;
+    }
+
+    .programs-section h3 {
+      margin: 0 0 32px;
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .programs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .program-item {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 22px;
+    }
+
+    .program-item .prog-icon { font-size: 28px; margin-bottom: 12px; }
+    .program-item h4 { margin: 0 0 8px; font-size: 15px; font-weight: 700; color: #fff; }
+    .program-item p { margin: 0; font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.7; }
+
+    .alert-box {
+      display: flex; gap: 16px; padding: 20px 24px;
+      background: #f0fdf6; border: 1px solid rgba(7,95,59,0.2);
+      border-right: 5px solid var(--primary); border-radius: 10px; margin-top: 32px;
+    }
+    .alert-box p { margin: 0; font-size: 14px; color: var(--ink); line-height: 1.8; }
+    .alert-box strong { color: var(--primary-dark); }
+
+    .faq-list { display: flex; flex-direction: column; gap: 12px; margin-top: 32px; }
+    .faq-item { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+    .faq-q { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; cursor: pointer; font-size: 15px; font-weight: 700; color: var(--primary-dark); gap: 12px; user-select: none; }
+    .faq-q:hover { background: var(--primary-soft); }
+    .faq-toggle { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; background: var(--primary-soft); color: var(--primary); display: inline-grid; place-items: center; font-size: 16px; transition: transform var(--fast), background var(--fast); }
+    .faq-item.open .faq-toggle { transform: rotate(45deg); background: var(--primary); color: #fff; }
+    .faq-a { display: none; padding: 0 22px 18px; font-size: 14px; color: var(--muted); line-height: 1.85; }
+    .faq-item.open .faq-a { display: block; }
+
+    .cta-banner { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 18px; padding: 44px 48px; margin-top: 64px; display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap; }
+    .cta-banner h3 { margin: 0 0 8px; color: #fff; font-size: 22px; font-weight: 800; }
+    .cta-banner p { margin: 0; color: rgba(255,255,255,0.78); font-size: 15px; }
+    .cta-actions { display: flex; gap: 12px; flex-wrap: wrap; flex: 0 0 auto; }
+    .btn-white { display: inline-flex; align-items: center; gap: 8px; padding: 13px 26px; border-radius: 9px; background: #fff; color: var(--primary-dark); font-weight: 800; font-size: 15px; font-family: var(--font-ar); border: none; cursor: pointer; transition: transform var(--fast), box-shadow var(--fast); }
+    .btn-white:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,0.18); }
+
+    @media (max-width: 768px) {
+      .beneficiaries-section, .programs-section { padding: 28px 20px; }
+      .cta-banner { padding: 28px 22px; flex-direction: column; }
+      .cta-actions { width: 100%; }
+      .btn-white { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
 <body>
   <div id="header-placeholder"></div>
-
   <main>
     <section class="hero">
       <div class="hero-content">
         <span class="badge">مصالح البلدية</span>
         <h2>مصلحة الشؤون الاجتماعية</h2>
-        <p>فضاء مخصص لمتابعة الخدمات الاجتماعية، برامج التضامن، ومرافقة الفئات المحتاجة داخل البلدية.</p>
+        <p>مرافقة الفئات المحتاجة، برامج التضامن والمساعدة الاجتماعية، ودعم الأسر الهشة داخل إقليم البلدية.</p>
         <div class="hero-actions">
           <a href="#social-services" class="btn primary">عرض الخدمات</a>
           <a href="contact.html" class="btn secondary">اتصل بالمصلحة</a>
@@ -26,74 +187,216 @@
       </div>
     </section>
 
-    <section class="quick-stats" aria-label="معلومات سريعة">
-      <div>
-        <strong>03</strong>
-        <span>محاور خدمة</span>
-      </div>
-      <div>
-        <strong>01</strong>
-        <span>مصلحة متابعة</span>
-      </div>
-      <div>
-        <strong>2026</strong>
-        <span>إرشاد رقمي</span>
+    <section class="quick-stats">
+      <div><strong>06</strong><span>برامج دعم</span></div>
+      <div><strong>دائم</strong><span>استقبال المواطنين</span></div>
+      <div><strong>مجاني</strong><span>جميع الخدمات</span></div>
+    </section>
+
+    <!-- الفئات المستفيدة -->
+    <section class="section">
+      <div class="beneficiaries-section">
+        <h3>👥 الفئات المستفيدة من خدمات المصلحة</h3>
+        <div class="beneficiaries-grid">
+          <div class="ben-item">
+            <div class="icon">👴</div>
+            <h4>المسنّون وكبار السن</h4>
+          </div>
+          <div class="ben-item">
+            <div class="icon">♿</div>
+            <h4>ذوو الاحتياجات الخاصة</h4>
+          </div>
+          <div class="ben-item">
+            <div class="icon">👩‍👧</div>
+            <h4>الأسر المعوزة</h4>
+          </div>
+          <div class="ben-item">
+            <div class="icon">👦</div>
+            <h4>الأطفال في الخطر</h4>
+          </div>
+          <div class="ben-item">
+            <div class="icon">💼</div>
+            <h4>العاطلون عن العمل</h4>
+          </div>
+          <div class="ben-item">
+            <div class="icon">🏥</div>
+            <h4>مرضى مزمنون</h4>
+          </div>
+        </div>
       </div>
     </section>
 
+    <!-- الخدمات -->
     <section class="section" id="social-services">
       <div class="section-heading">
-        <span>الشؤون الاجتماعية</span>
-        <h2>خدمات موجهة للمرافقة والتضامن</h2>
+        <span>الخدمات الاجتماعية</span>
+        <h2>ما تقدمه المصلحة للمواطن</h2>
       </div>
+      <div class="social-grid">
 
-      <div class="cards service-grid">
-        <article class="card service-card">
-          <span class="card-icon">01</span>
-          <h3>المساعدات الاجتماعية</h3>
-          <p>إرشاد المواطنين حول الملفات والإجراءات المرتبطة بالمساعدات الاجتماعية.</p>
-        </article>
+        <div class="social-card">
+          <div class="social-card-icon">💰</div>
+          <h3>المساعدة الاجتماعية المالية</h3>
+          <p>منح مساعدات مالية استثنائية للأسر في وضعيات هشة بقرار من رئيس المجلس الشعبي البلدي.</p>
+          <ul class="docs-list">
+            <li>طلب مكتوب موجّه لرئيس البلدية</li>
+            <li>بطاقة التعريف الوطنية ودفتر العائلة</li>
+            <li>شهادة إقامة حديثة</li>
+            <li>شهادة بعدم العمل أو وثيقة الدخل</li>
+            <li>وثائق تُثبت الوضعية الاجتماعية الهشة</li>
+          </ul>
+          <span class="tag">📌 تقديري</span>
+        </div>
 
-        <article class="card service-card">
-          <span class="card-icon">02</span>
-          <h3>برامج التضامن</h3>
-          <p>متابعة البرامج التضامنية المحلية وتوجيه المستفيدين حسب الشروط التنظيمية.</p>
-        </article>
+        <div class="social-card">
+          <div class="social-card-icon">📦</div>
+          <h3>المساعدة العينية والغذائية</h3>
+          <p>توزيع المواد الغذائية والملابس والمستلزمات على الأسر المحتاجة خاصة في المناسبات والأزمات.</p>
+          <ul class="docs-list">
+            <li>التسجيل لدى المصلحة الاجتماعية</li>
+            <li>بطاقة التعريف الوطنية</li>
+            <li>دفتر العائلة</li>
+            <li>شهادة عدم الدخل أو الوثائق المثبِّتة</li>
+          </ul>
+          <span class="tag">📅 مواسمي ودوري</span>
+        </div>
 
-        <article class="card service-card">
-          <span class="card-icon">03</span>
-          <h3>دعم الفئات المحتاجة</h3>
-          <p>مرافقة الفئات الهشة وتقديم المعلومات اللازمة للتكفل الاجتماعي المناسب.</p>
-        </article>
+        <div class="social-card">
+          <div class="social-card-icon">♿</div>
+          <h3>دعم ذوي الاحتياجات الخاصة</h3>
+          <p>تسهيل الحصول على بطاقة الإعاقة، التوجيه نحو المرافق المتخصصة، ومتابعة ملفات الإدماج.</p>
+          <ul class="docs-list">
+            <li>شهادة طبية تُثبت الإعاقة</li>
+            <li>بطاقة التعريف الوطنية</li>
+            <li>دفتر العائلة</li>
+            <li>صورتان شمسيتان</li>
+          </ul>
+          <span class="tag">⏱ 15 يوم</span>
+        </div>
+
+        <div class="social-card">
+          <div class="social-card-icon">🏡</div>
+          <h3>ملفات السكن الاجتماعي</h3>
+          <p>إرشاد وتوجيه المواطنين في إعداد وتقديم ملفات طلب السكن الاجتماعي AADL وسكن عدل وLPP.</p>
+          <ul class="docs-list">
+            <li>بطاقة التعريف الوطنية</li>
+            <li>دفتر العائلة</li>
+            <li>شهادة إقامة حديثة</li>
+            <li>شهادة العمل أو شهادة عدم العمل</li>
+            <li>وثيقة تثبت عدم امتلاك سكن</li>
+          </ul>
+          <span class="tag">📋 توجيه وإرشاد</span>
+        </div>
+
+        <div class="social-card">
+          <div class="social-card-icon">👴</div>
+          <h3>رعاية المسنّين</h3>
+          <p>متابعة وضعية كبار السن العاجزين وتوجيههم نحو الهياكل المتخصصة ودور العجزة المعتمدة.</p>
+          <ul class="docs-list">
+            <li>بطاقة التعريف الوطنية للمسنّ</li>
+            <li>تقرير طبي يُثبت وضعية العجز</li>
+            <li>شهادة عدم وجود ذوي يتكفلون بالرعاية</li>
+          </ul>
+          <span class="tag">💬 مرافقة شخصية</span>
+        </div>
+
+        <div class="social-card">
+          <div class="social-card-icon">📜</div>
+          <h3>شهادة التكفل الاجتماعي</h3>
+          <p>تسليم شهادة التكفل الاجتماعي للأسر المسجلة لدى المصلحة لتستخدمها في الإجراءات الإدارية الأخرى.</p>
+          <ul class="docs-list">
+            <li>التسجيل المسبق في قاعدة بيانات المصلحة</li>
+            <li>بطاقة التعريف الوطنية</li>
+            <li>دفتر العائلة محيّن</li>
+          </ul>
+          <span class="tag">⏱ 48 ساعة</span>
+        </div>
+
       </div>
     </section>
 
-    <section class="section news-section">
-      <div class="section-heading">
-        <span>إرشادات</span>
-        <h2>معلومات للمواطنين</h2>
+    <!-- البرامج الوطنية -->
+    <section class="section">
+      <div class="programs-section">
+        <h3>🌐 البرامج الوطنية الاجتماعية المتاحة</h3>
+        <div class="programs-grid">
+          <div class="program-item">
+            <div class="prog-icon">💊</div>
+            <h4>دواء مجاني (FNPOS)</h4>
+            <p>الاستفادة من الدواء المجاني لذوي الدخل المحدود عبر الصندوق الوطني للتضامن.</p>
+          </div>
+          <div class="program-item">
+            <div class="prog-icon">📚</div>
+            <h4>المنح المدرسية</h4>
+            <p>دعم تمدرس أبناء الأسر المعوزة بمنح مدرسية وأدوات دراسية مجانية.</p>
+          </div>
+          <div class="program-item">
+            <div class="prog-icon">🏥</div>
+            <h4>بطاقة الشفاء (Chifa)</h4>
+            <p>المرافقة في الحصول على بطاقة الشفاء للمستفيدين من الضمان الاجتماعي.</p>
+          </div>
+          <div class="program-item">
+            <div class="prog-icon">🏠</div>
+            <h4>سكن الهشاشة</h4>
+            <p>برنامج إسكان الأسر المقيمة في مساكن هشة أو مهددة بالانهيار.</p>
+          </div>
+        </div>
       </div>
+    </section>
 
-      <div class="cards news-grid">
-        <article class="card news-card">
-          <time datetime="2026-05-03">03 ماي 2026</time>
-          <h3>تحضير الملفات</h3>
-          <p>يرجى التأكد من اكتمال الوثائق المطلوبة قبل التوجه إلى المصلحة المختصة.</p>
-        </article>
+    <section class="section">
+      <div class="alert-box">
+        <div style="font-size:24px;flex:0 0 auto">💚</div>
+        <div>
+          <p><strong>سرية المعلومات:</strong> جميع المعلومات المقدمة للمصلحة الاجتماعية سرية تمامًا ولا تُستخدم إلا لأغراض الدعم الاجتماعي. لا تتردد في طلب المساعدة.</p>
+          <p style="margin-top:8px;">للاستعجالات الاجتماعية خارج أوقات العمل، تواصل مع رئاسة البلدية مباشرة.</p>
+        </div>
+      </div>
+    </section>
 
-        <article class="card news-card">
-          <time datetime="2026-05-03">03 ماي 2026</time>
-          <h3>طلب الاستفسار</h3>
-          <p>يمكن التواصل مع البلدية للحصول على معلومات إضافية حول الخدمات الاجتماعية.</p>
-        </article>
+    <!-- FAQ -->
+    <section class="section">
+      <div class="section-heading">
+        <span>أسئلة شائعة</span>
+        <h2>ما يسأله المواطنون</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">كيف أعرف إن كنت مؤهلاً للمساعدة الاجتماعية؟<span class="faq-toggle">+</span></div>
+          <div class="faq-a">تتوجه إلى المصلحة الاجتماعية للبلدية حاملاً وثائقك، وتُجرى دراسة اجتماعية لوضعيتك. القرار مبني على دخل الأسرة وعدد أفرادها ووضعيتها الصحية والسكنية.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">هل يمكن تجديد طلب المساعدة كل سنة؟<span class="faq-toggle">+</span></div>
+          <div class="faq-a">نعم، يمكن تجديد الطلب سنوياً بتحيين الوثائق. تُجرى مراجعة دورية للقائمات لضمان وصول الدعم لمستحقيه الفعليين.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">ماذا أفعل في حالة طوارئ اجتماعية؟<span class="faq-toggle">+</span></div>
+          <div class="faq-a">تتوجه فوراً لرئاسة البلدية وتطلب مقابلة المسؤول الاجتماعي. حالات الطوارئ (تشرد، عنف، فقر مدقع) تُعالَج باستعجال.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">هل تتدخل البلدية في حالات العنف الأسري؟<span class="faq-toggle">+</span></div>
+          <div class="faq-a">تُوجِّه البلدية الضحايا نحو الجهات المختصة (الشرطة، القضاء، المصالح الولائية الاجتماعية). يمكن للمصلحة الاجتماعية تقديم شهادة الدعم الاجتماعي في هذه الحالات.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="cta-banner">
+        <div>
+          <h3>لا تتردد في طلب المساعدة</h3>
+          <p>المصلحة الاجتماعية موجودة لخدمتك. تواصل معنا في أي وقت.</p>
+        </div>
+        <div class="cta-actions">
+          <a href="contact.html" class="btn-white">📞 اتصل بنا</a>
+        </div>
       </div>
     </section>
   </main>
 
-  <footer>
-    <p>جميع الحقوق محفوظة © بلدية سيق</p>
-  </footer>
-
+  <footer><p>جميع الحقوق محفوظة © بلدية سيق</p></footer>
   <script src="header-loader.js"></script>
+  <script>
+    function toggleFaq(el) { el.closest('.faq-item').classList.toggle('open'); }
+  </script>
 </body>
 </html>
