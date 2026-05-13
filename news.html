@@ -8,71 +8,333 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-</head>
+  <style>
+    .news-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 32px 0 0;
+    }
 
+    .filter-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--muted);
+      font-family: var(--font-ar);
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--fast);
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .news-featured {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 24px;
+      margin-top: 32px;
+    }
+
+    .news-featured-main {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(7,53,35,0.08);
+      transition: transform var(--fast), box-shadow var(--fast);
+    }
+
+    .news-featured-main:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 40px rgba(7,53,35,0.14);
+    }
+
+    .news-featured-main img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .news-featured-main .news-body {
+      padding: 24px;
+    }
+
+    .news-featured-side {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .news-side-item {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      gap: 0;
+      box-shadow: 0 4px 12px rgba(7,53,35,0.06);
+      transition: transform var(--fast), box-shadow var(--fast);
+      cursor: pointer;
+    }
+
+    .news-side-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(7,53,35,0.12);
+    }
+
+    .news-side-item img {
+      width: 110px;
+      height: 100%;
+      object-fit: cover;
+      flex: 0 0 auto;
+    }
+
+    .news-side-body {
+      padding: 14px 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .news-category {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--primary-soft);
+      color: var(--primary);
+      width: fit-content;
+    }
+
+    .news-title {
+      margin: 0;
+      color: var(--primary-dark);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .news-date {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .news-list-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 22px;
+      margin-top: 32px;
+    }
+
+    .news-list-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(7,53,35,0.06);
+      transition: transform var(--fast), box-shadow var(--fast);
+    }
+
+    .news-list-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 36px rgba(7,53,35,0.12);
+    }
+
+    .news-list-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .news-list-card .nlc-body {
+      padding: 20px;
+    }
+
+    .nlc-body .news-category { margin-bottom: 8px; }
+    .nlc-body h3 { margin: 0 0 8px; color: var(--primary-dark); font-size: 16px; font-weight: 800; }
+    .nlc-body p { margin: 0 0 14px; color: var(--muted); font-size: 13.5px; line-height: 1.75; }
+    .nlc-body time { font-size: 12px; color: var(--muted); }
+
+    .newsletter-band {
+      background: var(--primary-soft);
+      border: 1px solid rgba(7,95,59,0.15);
+      border-radius: 14px;
+      padding: 32px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-top: 32px;
+    }
+
+    .newsletter-band h3 { margin: 0 0 6px; color: var(--primary-dark); font-size: 18px; font-weight: 800; }
+    .newsletter-band p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    @media (max-width: 900px) {
+      .news-featured { grid-template-columns: 1fr; }
+      .news-featured-main img { height: 200px; }
+    }
+
+    @media (max-width: 640px) {
+      .news-side-item img { width: 80px; }
+      .newsletter-band { padding: 22px 20px; flex-direction: column; }
+    }
+  </style>
+</head>
 <body>
   <div id="header-placeholder"></div>
-
   <main>
     <section class="hero">
       <div class="hero-content">
         <span class="badge">الأخبار الرسمية</span>
         <h2>أخبار بلدية سيق</h2>
-        <p>تابعوا آخر المستجدات والإعلانات والنشاطات المحلية المنشورة عبر البوابة الرسمية للبلدية.</p>
+        <p>آخر المستجدات والإعلانات الرسمية والنشاطات المحلية المُعتمدة من البوابة الرسمية للبلدية.</p>
         <div class="hero-actions">
-          <a href="#latest-news" class="btn primary">آخر الأخبار</a>
-          <a href="index.html" class="btn secondary">العودة للرئيسية</a>
+          <a href="#latest" class="btn primary">آخر الأخبار</a>
+          <a href="index.html" class="btn secondary">الرئيسية</a>
         </div>
       </div>
     </section>
 
-    <section class="quick-stats" aria-label="معلومات سريعة">
-      <div>
-        <strong>03</strong>
-        <span>أخبار منشورة</span>
+    <section class="quick-stats">
+      <div><strong>2026</strong><span>سنة التحديث</span></div>
+      <div><strong>24/7</strong><span>متابعة رقمية</span></div>
+      <div><strong>رسمي</strong><span>مصدر موثوق</span></div>
+    </section>
+
+    <!-- الخبر الرئيسي -->
+    <section class="section" id="latest">
+      <div class="section-heading">
+        <span>أبرز الأخبار</span>
+        <h2>الأخبار المميزة</h2>
       </div>
-      <div>
-        <strong>2026</strong>
-        <span>سنة التحديث</span>
-      </div>
-      <div>
-        <strong>24/7</strong>
-        <span>متابعة رقمية</span>
+
+      <div class="news-featured">
+        <div class="news-featured-main">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Sig_-_l%27h%C3%B4tel_de_ville.jpg" alt="افتتاح مشروع">
+          <div class="news-body">
+            <span class="news-category">🏗️ مشاريع</span>
+            <h3 style="margin:10px 0 8px;color:var(--primary-dark);font-size:20px;font-weight:800;">افتتاح مشروع تهيئة حضرية جديد بوسط المدينة</h3>
+            <p style="color:var(--muted);font-size:14px;line-height:1.8;margin:0 0 12px;">تم افتتاح مشروع تهيئة حضرية يشمل رصف الشوارع، تحديث الإضاءة العمومية، وإنشاء فضاءات خضراء جديدة لصالح سكان المدينة.</p>
+            <time style="font-size:12px;color:var(--muted);">29 أفريل 2026</time>
+          </div>
+        </div>
+
+        <div class="news-featured-side">
+          <div class="news-side-item">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Mascara_-_place_de_la_r%C3%A9publique.jpg/320px-Mascara_-_place_de_la_r%C3%A9publique.jpg" alt="إعلان">
+            <div class="news-side-body">
+              <span class="news-category">📢 إعلان</span>
+              <h4 class="news-title">إعلان هام للمواطنين</h4>
+              <span class="news-date">29 أفريل 2026</span>
+            </div>
+          </div>
+          <div class="news-side-item">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Sig%2C_Mascara.jpg/320px-Sig%2C_Mascara.jpg" alt="نظافة">
+            <div class="news-side-body">
+              <span class="news-category">🌿 بيئة</span>
+              <h4 class="news-title">حملة نظافة عبر الأحياء</h4>
+              <span class="news-date">29 أفريل 2026</span>
+            </div>
+          </div>
+          <div class="news-side-item">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Sig_-_l%27h%C3%B4tel_de_ville.jpg" alt="اجتماع">
+            <div class="news-side-body">
+              <span class="news-category">🏛️ إداري</span>
+              <h4 class="news-title">اجتماع المجلس الشعبي البلدي</h4>
+              <span class="news-date">20 أفريل 2026</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="section news-section" id="latest-news">
+    <!-- قائمة الأخبار -->
+    <section class="section">
       <div class="section-heading">
-        <span>متابعة</span>
-        <h2>آخر الأخبار والإعلانات</h2>
+        <span>أرشيف الأخبار</span>
+        <h2>جميع الأخبار والإعلانات</h2>
       </div>
 
-      <div class="cards news-grid">
-        <article class="card news-card">
-          <time datetime="2026-04-29">29 أفريل 2026</time>
-          <h3>افتتاح مشروع جديد</h3>
-          <p>تم افتتاح مشروع جديد يهدف إلى تحسين الخدمات المقدمة للمواطنين.</p>
-        </article>
+      <div class="news-filter">
+        <button class="filter-btn active">الكل</button>
+        <button class="filter-btn">🏗️ مشاريع</button>
+        <button class="filter-btn">📢 إعلانات</button>
+        <button class="filter-btn">🌿 بيئة ونظافة</button>
+        <button class="filter-btn">🏛️ إداري</button>
+        <button class="filter-btn">🤝 اجتماعي</button>
+      </div>
 
-        <article class="card news-card">
-          <time datetime="2026-04-29">29 أفريل 2026</time>
-          <h3>حملة نظافة واسعة</h3>
-          <p>تنظيم حملة نظافة واسعة عبر الأحياء بمشاركة مختلف المصالح.</p>
-        </article>
+      <div class="news-list-grid">
+        <div class="news-list-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Sig_-_l%27h%C3%B4tel_de_ville.jpg" alt="خبر 1">
+          <div class="nlc-body">
+            <span class="news-category">🏗️ مشاريع</span>
+            <h3>مشروع تهيئة المداخل الرئيسية للبلدية</h3>
+            <p>إطلاق مشروع تهيئة شامل يستهدف المداخل الرئيسية لمدينة سيق بالتنسيق مع مديرية الأشغال العمومية.</p>
+            <time>15 أفريل 2026</time>
+          </div>
+        </div>
+        <div class="news-list-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Sig%2C_Mascara.jpg/320px-Sig%2C_Mascara.jpg" alt="خبر 2">
+          <div class="nlc-body">
+            <span class="news-category">🌿 بيئة</span>
+            <h3>حملة نظافة واسعة عبر أحياء البلدية</h3>
+            <p>تنظيم حملة نظافة شاملة بمشاركة جميع مصالح البلدية وجمعيات الأحياء المحلية.</p>
+            <time>10 أفريل 2026</time>
+          </div>
+        </div>
+        <div class="news-list-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Mascara_-_place_de_la_r%C3%A9publique.jpg/320px-Mascara_-_place_de_la_r%C3%A9publique.jpg" alt="خبر 3">
+          <div class="nlc-body">
+            <span class="news-category">📢 إعلان</span>
+            <h3>إعلان توزيع المساعدات الاجتماعية</h3>
+            <p>تُعلن بلدية سيق عن موعد توزيع المساعدات الاجتماعية الموجهة للأسر المحتاجة خلال شهر ماي.</p>
+            <time>05 أفريل 2026</time>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <article class="card news-card">
-          <time datetime="2026-04-29">29 أفريل 2026</time>
-          <h3>إعلان هام</h3>
-          <p>يرجى من المواطنين متابعة المستجدات والإعلانات الرسمية عبر الموقع.</p>
-        </article>
+    <!-- شريط الاشتراك -->
+    <section class="section">
+      <div class="newsletter-band">
+        <div>
+          <h3>📣 تابع أخبار البلدية</h3>
+          <p>تفضل بزيارة الموقع بانتظام للاطلاع على آخر الإعلانات والمستجدات الرسمية.</p>
+        </div>
+        <a href="contact.html" class="btn primary" style="flex:0 0 auto;">اتصل بنا</a>
       </div>
     </section>
   </main>
 
-  <footer>
-    <p>جميع الحقوق محفوظة © بلدية سيق</p>
-  </footer>
-
+  <footer><p>جميع الحقوق محفوظة © بلدية سيق</p></footer>
   <script src="header-loader.js"></script>
+  <script>
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
 </body>
 </html>
