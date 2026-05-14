@@ -3,116 +3,471 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>بلدية سيق</title>
+  <title>بلدية سيق | الموقع الرسمي</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <style>
+    .hero {
+      position: relative;
+      min-height: 580px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      background: url("https://upload.wikimedia.org/wikipedia/commons/e/e9/Sig_-_l%27h%C3%B4tel_de_ville.jpg") center/cover no-repeat;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(4,37,22,0.85) 0%, rgba(7,95,59,0.58) 55%, rgba(0,0,0,0.38) 100%);
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      width: var(--container);
+      margin: auto;
+      padding: 80px 0 64px;
+      display: grid;
+      grid-template-columns: 1fr 330px;
+      gap: 48px;
+      align-items: center;
+    }
+    .hero-content { color: #fff; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: rgba(185,151,58,0.22);
+      border: 1px solid rgba(185,151,58,0.5);
+      color: #ead084;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .hero-content h2 {
+      margin: 0 0 18px;
+      font-size: clamp(26px, 4.5vw, 48px);
+      font-weight: 800;
+      line-height: 1.25;
+      color: #fff;
+    }
+    .hero-content p {
+      margin: 0 0 32px;
+      font-size: 17px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.85;
+      max-width: 520px;
+    }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-hero-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: 10px;
+      background: var(--accent); color: #fff;
+      font-family: var(--font-ar); font-size: 15px; font-weight: 800;
+      border: none; cursor: pointer; text-decoration: none;
+      transition: transform var(--fast), box-shadow var(--fast), background var(--fast);
+    }
+    .btn-hero-primary:hover { background: #a07e2a; transform: translateY(-3px); box-shadow: 0 14px 32px rgba(185,151,58,0.4); }
+    .btn-hero-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: 10px;
+      background: rgba(255,255,255,0.12); backdrop-filter: blur(8px);
+      color: #fff; font-family: var(--font-ar); font-size: 15px; font-weight: 700;
+      border: 1px solid rgba(255,255,255,0.32); cursor: pointer; text-decoration: none;
+      transition: transform var(--fast), background var(--fast);
+    }
+    .btn-hero-secondary:hover { background: rgba(255,255,255,0.22); transform: translateY(-3px); }
+
+    .hero-contact-card {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 18px;
+      padding: 28px;
+      color: #fff;
+    }
+    .hero-contact-card h4 { margin: 0 0 18px; font-size: 15px; font-weight: 800; color: #ead084; }
+    .hcc-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .hcc-item:last-child { border-bottom: none; }
+    .hcc-icon { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 9px; background: rgba(185,151,58,0.25); font-size: 16px; flex: 0 0 auto; }
+    .hcc-item .lbl { font-size: 11px; color: rgba(255,255,255,0.65); }
+    .hcc-item .val { font-size: 14px; font-weight: 700; color: #fff; }
+
+    /* STATS */
+    .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--primary-dark); }
+    .stat-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 28px 16px; border-left: 1px solid rgba(255,255,255,0.1); text-align: center; }
+    .stat-item:last-child { border-left: none; }
+    .stat-item strong { font-size: clamp(26px, 4vw, 38px); font-weight: 800; color: var(--accent); line-height: 1; }
+    .stat-item span { font-size: 13px; color: rgba(255,255,255,0.72); font-weight: 600; }
+
+    /* SECTIONS */
+    .page-section { width: var(--container); margin: 72px auto 0; }
+    .section-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 14px; border-radius: 999px;
+      background: var(--primary-soft); color: var(--primary);
+      font-size: 12.5px; font-weight: 800; margin-bottom: 12px;
+    }
+    .section-title { margin: 0 0 8px; color: var(--primary-dark); font-size: clamp(22px, 3.5vw, 34px); font-weight: 800; line-height: 1.3; }
+    .section-sub { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.8; max-width: 540px; }
+    .section-head-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 36px; }
+    .view-all-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 18px; border-radius: 8px;
+      border: 1px solid var(--line); background: var(--surface);
+      color: var(--primary); font-size: 14px; font-weight: 700; white-space: nowrap;
+      transition: background var(--fast), border-color var(--fast), transform var(--fast); flex: 0 0 auto;
+    }
+    .view-all-link:hover { background: var(--primary-soft); border-color: var(--primary); transform: translateX(-3px); }
+
+    /* QUICK ACCESS */
+    .quick-access { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .qa-card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+      padding: 22px 18px; text-align: center; text-decoration: none;
+      transition: transform var(--fast), box-shadow var(--fast), background var(--fast);
+      box-shadow: 0 4px 14px rgba(7,53,35,0.05);
+    }
+    .qa-card:hover { transform: translateY(-5px); box-shadow: 0 18px 36px rgba(7,53,35,0.12); background: var(--primary-soft); }
+    .qa-icon { font-size: 32px; margin-bottom: 10px; display: block; }
+    .qa-card h4 { margin: 0 0 4px; color: var(--primary-dark); font-size: 14px; font-weight: 800; }
+    .qa-card p { margin: 0; color: var(--muted); font-size: 12.5px; line-height: 1.6; }
+
+    /* SERVICES */
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .service-card {
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: 16px; padding: 28px; text-decoration: none; display: block;
+      position: relative; overflow: hidden;
+      box-shadow: 0 4px 16px rgba(7,53,35,0.05);
+      transition: transform var(--fast), box-shadow var(--fast);
+    }
+    .service-card::after {
+      content: ""; position: absolute; inset: 0; border-radius: 16px;
+      border: 2px solid var(--primary); opacity: 0; transition: opacity var(--fast);
+    }
+    .service-card:hover { transform: translateY(-6px); box-shadow: 0 22px 44px rgba(7,53,35,0.13); }
+    .service-card:hover::after { opacity: 1; }
+    .sc-icon { font-size: 36px; margin-bottom: 14px; display: block; }
+    .service-card h3 { margin: 0 0 10px; color: var(--primary-dark); font-size: 17px; font-weight: 800; }
+    .service-card p { margin: 0 0 18px; color: var(--muted); font-size: 14px; line-height: 1.8; }
+    .sc-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .sc-tag { display: inline-flex; padding: 3px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 600; background: var(--page); color: var(--muted); border: 1px solid var(--line); }
+
+    /* NEWS */
+    .news-row { display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; }
+    .news-main-card {
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: 16px; overflow: hidden;
+      box-shadow: 0 6px 20px rgba(7,53,35,0.07);
+      transition: transform var(--fast), box-shadow var(--fast);
+    }
+    .news-main-card:hover { transform: translateY(-4px); box-shadow: 0 20px 42px rgba(7,53,35,0.13); }
+    .news-main-card img { width: 100%; height: 240px; object-fit: cover; display: block; }
+    .nmc-body { padding: 24px; }
+    .news-cat { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700; background: var(--primary-soft); color: var(--primary); margin-bottom: 10px; }
+    .nmc-body h3 { margin: 0 0 10px; color: var(--primary-dark); font-size: 19px; font-weight: 800; line-height: 1.4; }
+    .nmc-body p { margin: 0 0 14px; color: var(--muted); font-size: 14px; line-height: 1.8; }
+    .nmc-body time { font-size: 12px; color: var(--muted); }
+    .news-side { display: flex; flex-direction: column; gap: 16px; }
+    .news-mini-card {
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: 12px; overflow: hidden; display: flex;
+      box-shadow: 0 4px 12px rgba(7,53,35,0.05);
+      transition: transform var(--fast), box-shadow var(--fast); text-decoration: none;
+    }
+    .news-mini-card:hover { transform: translateX(-4px); box-shadow: 0 12px 28px rgba(7,53,35,0.11); }
+    .news-mini-card img { width: 100px; height: 100%; object-fit: cover; flex: 0 0 auto; }
+    .nmc-mini-body { padding: 14px 16px; display: flex; flex-direction: column; justify-content: center; gap: 5px; }
+    .nmc-mini-body h4 { margin: 0; color: var(--primary-dark); font-size: 14px; font-weight: 700; line-height: 1.4; }
+    .nmc-mini-body time { font-size: 11.5px; color: var(--muted); }
+
+    /* ABOUT BAND */
+    .about-band {
+      background: linear-gradient(135deg, var(--primary-dark), #0a4a30);
+      border-radius: 20px; padding: 56px 60px; margin-top: 72px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center;
+    }
+    .about-text h3 { margin: 0 0 16px; color: #fff; font-size: 26px; font-weight: 800; line-height: 1.35; }
+    .about-text p { margin: 0 0 28px; color: rgba(255,255,255,0.78); font-size: 15px; line-height: 1.9; }
+    .about-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 26px; border-radius: 9px; background: var(--accent);
+      color: #fff; font-family: var(--font-ar); font-size: 15px; font-weight: 800; text-decoration: none;
+      transition: transform var(--fast), box-shadow var(--fast), background var(--fast);
+    }
+    .about-btn:hover { background: #a07e2a; transform: translateY(-3px); box-shadow: 0 12px 28px rgba(185,151,58,0.4); }
+    .about-features { display: flex; flex-direction: column; gap: 16px; }
+    .af-item { display: flex; align-items: flex-start; gap: 14px; padding: 18px 20px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; }
+    .af-icon { display: inline-grid; place-items: center; width: 42px; height: 42px; border-radius: 10px; background: rgba(185,151,58,0.22); font-size: 20px; flex: 0 0 auto; }
+    .af-item h4 { margin: 0 0 4px; color: #fff; font-size: 14px; font-weight: 800; }
+    .af-item p { margin: 0; color: rgba(255,255,255,0.68); font-size: 13px; line-height: 1.7; }
+
+    /* FOOTER */
+    .site-footer { background: var(--primary-dark); color: rgba(255,255,255,0.72); margin-top: 88px; }
+    .footer-top { width: var(--container); margin: auto; padding: 56px 0 40px; display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; }
+    .footer-brand img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); margin-bottom: 14px; display: block; }
+    .footer-brand h3 { margin: 0 0 8px; color: #fff; font-size: 18px; font-weight: 800; }
+    .footer-brand p { margin: 0; font-size: 13px; line-height: 1.8; }
+    .footer-col h4 { margin: 0 0 16px; color: #fff; font-size: 14px; font-weight: 800; }
+    .footer-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul li a { font-size: 13.5px; color: rgba(255,255,255,0.65); transition: color var(--fast); }
+    .footer-col ul li a:hover { color: #ead084; }
+    .fci { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: rgba(255,255,255,0.65); margin-bottom: 10px; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding: 18px 0; width: var(--container); margin: auto; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 12.5px; }
+
+    /* Reveal */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-contact-card { display: none; }
+      .news-row { grid-template-columns: 1fr; }
+      .about-band { grid-template-columns: 1fr; padding: 36px 28px; gap: 32px; }
+      .quick-access { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+      .stat-item { border-left: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+      .services-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; gap: 28px; padding: 36px 0; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .hero-inner { padding: 52px 0 40px; }
+    }
+  </style>
 </head>
 <body>
   <div id="header-placeholder"></div>
   <main>
+
+    <!-- HERO -->
     <section class="hero">
-      <div class="hero-content">
-        <span class="badge">الموقع الرسمي</span>
-        <h2>مرحبا بكم في بلدية سيق</h2>
-        <p>فضاء رقمي لخدمة المواطن، متابعة الأخبار، والتعرف على مصالح البلدية.</p>
-        <div class="hero-actions" >
-          <a href="#services" class="btn primary">استكشف المصالح</a>
-          <a href="news.html" class="btn secondary">آخر الأخبار</a>
+      <div class="hero-inner">
+        <div class="hero-content">
+          <div class="hero-badge">🏛️ البوابة الرسمية لبلدية سيق</div>
+          <h2>في خدمة المواطن<br>في كل مكان</h2>
+          <p>بوابة إلكترونية موحّدة لمتابعة خدمات البلدية، الأخبار الرسمية، ومصالح الإدارة المحلية — بشكل رقمي وسريع.</p>
+          <div class="hero-actions">
+            <a href="#services" class="btn-hero-primary">🔍 استكشف المصالح</a>
+            <a href="news.html" class="btn-hero-secondary">📰 آخر الأخبار</a>
+          </div>
+        </div>
+        <div class="hero-contact-card">
+          <h4>📞 تواصل سريع</h4>
+          <div class="hcc-item">
+            <div class="hcc-icon">📍</div>
+            <div><div class="lbl">العنوان</div><div class="val">بلدية سيق، ولاية معسكر</div></div>
+          </div>
+          <div class="hcc-item">
+            <div class="hcc-icon">📞</div>
+            <div><div class="lbl">الهاتف</div><div class="val">045 50 00 00</div></div>
+          </div>
+          <div class="hcc-item">
+            <div class="hcc-icon">✉️</div>
+            <div><div class="lbl">البريد الإلكتروني</div><div class="val">contact@commune-sig.dz</div></div>
+          </div>
+          <div class="hcc-item">
+            <div class="hcc-icon">🕐</div>
+            <div><div class="lbl">ساعات العمل</div><div class="val">الأحد–الخميس | 08:00–16:00</div></div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="quick-stats" aria-label="معلومات سريعة">
-      <div>
-        <strong>05</strong>
-        <span>مصالح رئيسية</span>
-      </div>
-      <div>
-        <strong>24/7</strong>
-        <span>واجهة معلوماتية</span>
-      </div>
-      <div>
-        <strong>2026</strong>
-        <span>تحديث رقمي</span>
-      </div>
-    </section>
+    <!-- STATS -->
+    <div class="stats-bar">
+      <div class="stat-item"><strong>05</strong><span>مصالح إدارية</span></div>
+      <div class="stat-item"><strong>20+</strong><span>خدمة للمواطن</span></div>
+      <div class="stat-item"><strong>24/7</strong><span>بوابة رقمية</span></div>
+      <div class="stat-item"><strong>مجاني</strong><span>جميع الخدمات</span></div>
+    </div>
 
-    <section class="section" id="services">
-      <div class="section-heading">
-        <span>الخدمات البلدية</span>
-        <h2>مصالح قريبة من المواطن</h2>
+    <!-- QUICK ACCESS -->
+    <div class="page-section reveal">
+      <div class="section-head-row">
+        <div>
+          <div class="section-label">⚡ روابط سريعة</div>
+          <h2 class="section-title">ماذا تحتاج اليوم؟</h2>
+        </div>
       </div>
+      <div class="quick-access">
+        <a class="qa-card" href="civil.html"><span class="qa-icon">📄</span><h4>استخراج وثيقة</h4><p>شهادة ميلاد، إقامة، زواج...</p></a>
+        <a class="qa-card" href="construction.html"><span class="qa-icon">🏗️</span><h4>رخصة بناء</h4><p>تقديم ملف رخصة البناء</p></a>
+        <a class="qa-card" href="social.html"><span class="qa-icon">🤝</span><h4>مساعدة اجتماعية</h4><p>طلب دعم اجتماعي للأسرة</p></a>
+        <a class="qa-card" href="contact.html"><span class="qa-icon">📞</span><h4>اتصل بنا</h4><p>للاستفسار والتواصل المباشر</p></a>
+      </div>
+    </div>
 
-      <div class="cards service-grid">
-        <a class="card service-card" href="construction.html">
-          <span class="card-icon">01</span>
+    <!-- SERVICES -->
+    <div class="page-section reveal" id="services">
+      <div class="section-head-row">
+        <div>
+          <div class="section-label">🏛️ الخدمات البلدية</div>
+          <h2 class="section-title">مصالح قريبة من المواطن</h2>
+          <p class="section-sub">اختر المصلحة التي تحتاجها وتعرّف على خدماتها والوثائق المطلوبة.</p>
+        </div>
+        <a href="departments.html" class="view-all-link">عرض جميع المصالح ←</a>
+      </div>
+      <div class="services-grid">
+        <a class="service-card" href="construction.html">
+          <span class="sc-icon">🏗️</span>
           <h3>البناء والتعمير</h3>
-          <p>رخص البناء، مخططات التهيئة، ومتابعة المشاريع العمرانية.</p>
+          <p>رخص البناء والهدم، شهادات التعمير والمطابقة، ومتابعة ملفات التسوية وفق قانون 08-15.</p>
+          <div class="sc-tags"><span class="sc-tag">رخصة البناء</span><span class="sc-tag">شهادة المطابقة</span><span class="sc-tag">التسوية</span></div>
         </a>
-
-        <a class="card service-card" href="investment.html">
-          <span class="card-icon">02</span>
-          <h3>الاستثمار</h3>
-          <p>مرافقة المستثمرين وتقديم المعلومات حول فرص المشاريع المحلية.</p>
-        </a>
-
-        <a class="card service-card" href="property.html">
-          <span class="card-icon">03</span>
-          <h3>أملاك البلدية</h3>
-          <p>متابعة الممتلكات البلدية وتسيير الملفات العقارية المحلية.</p>
-        </a>
-
-        <a class="card service-card" href="social.html">
-          <span class="card-icon">04</span>
-          <h3>الشؤون الاجتماعية</h3>
-          <p>خدمات اجتماعية ومرافقة الفئات المحتاجة داخل البلدية.</p>
-        </a>
-
-        <a class="card service-card" href="civil.html">
-          <span class="card-icon">05</span>
+        <a class="service-card" href="civil.html">
+          <span class="sc-icon">📄</span>
           <h3>الحالة المدنية</h3>
-          <p>وثائق الحالة المدنية والإرشاد الخاص بالإجراءات الإدارية.</p>
+          <p>وثائق الميلاد، الزواج، الطلاق والوفاة. خدمة الميلاد متاحة رقمياً عبر بوابة الداخلية.</p>
+          <div class="sc-tags"><span class="sc-tag">شهادة الميلاد</span><span class="sc-tag">شهادة الإقامة</span><span class="sc-tag">رقمي</span></div>
+        </a>
+        <a class="service-card" href="investment.html">
+          <span class="sc-icon">💼</span>
+          <h3>الاستثمار</h3>
+          <p>مرافقة المستثمرين المحليين وتقديم المعلومات حول الفرص الاستثمارية في إقليم البلدية.</p>
+          <div class="sc-tags"><span class="sc-tag">مرافقة المشاريع</span><span class="sc-tag">التوجيه</span></div>
+        </a>
+        <a class="service-card" href="property.html">
+          <span class="sc-icon">🏢</span>
+          <h3>أملاك البلدية</h3>
+          <p>كراء الأملاك البلدية، متابعة الملفات العقارية، والإرشاد الإداري للمواطنين.</p>
+          <div class="sc-tags"><span class="sc-tag">عقود الكراء</span><span class="sc-tag">الملفات العقارية</span></div>
+        </a>
+        <a class="service-card" href="social.html">
+          <span class="sc-icon">🤝</span>
+          <h3>الشؤون الاجتماعية</h3>
+          <p>مرافقة الفئات الهشة، المساعدات المالية والعينية، وملفات السكن الاجتماعي.</p>
+          <div class="sc-tags"><span class="sc-tag">مساعدات اجتماعية</span><span class="sc-tag">ذوو الاحتياجات</span></div>
+        </a>
+        <a class="service-card" href="contact.html" style="background:var(--primary-dark);border-color:var(--primary-dark);">
+          <span class="sc-icon">📞</span>
+          <h3 style="color:#fff;">هل لديك سؤال؟</h3>
+          <p style="color:rgba(255,255,255,0.75);">فريق البلدية جاهز للإجابة على استفساراتك خلال ساعات العمل الرسمية.</p>
+          <div style="margin-top:18px;display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:8px;background:var(--accent);color:#fff;font-size:14px;font-weight:800;">اتصل بنا الآن</div>
         </a>
       </div>
-    </section>
+    </div>
 
-    <section class="section news-section">
-      <div class="section-heading">
-        <span>متابعة</span>
-        <h2>آخر الأخبار</h2>
+    <!-- NEWS -->
+    <div class="page-section reveal">
+      <div class="section-head-row">
+        <div>
+          <div class="section-label">📰 الأخبار الرسمية</div>
+          <h2 class="section-title">آخر مستجدات البلدية</h2>
+        </div>
+        <a href="news.html" class="view-all-link">كل الأخبار ←</a>
       </div>
-
-      <div class="cards news-grid">
-        <article class="card news-card">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Sig_-_l%27h%C3%B4tel_de_ville.jpg" alt="افتتاح مشروع" style="width:100%;height:160px;object-fit:cover;border-radius:8px;margin-bottom:12px;">
-          <time datetime="2026-04-29">29 أفريل 2026</time>
-          <h3>افتتاح مشروع جديد</h3>
-          <p>تم افتتاح مشروع جديد يهدف إلى تحسين الخدمات المقدمة للمواطنين.</p>
-        </article>
-
-        <article class="card news-card">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Mascara_-_place_de_la_r%C3%A9publique.jpg/320px-Mascara_-_place_de_la_r%C3%A9publique.jpg" alt="إعلان هام" style="width:100%;height:160px;object-fit:cover;border-radius:8px;margin-bottom:12px;">
-          <time datetime="2026-04-29">29 أفريل 2026</time>
-          <h3>إعلان هام</h3>
-          <p>يرجى من المواطنين متابعة المستجدات والإعلانات الرسمية عبر الموقع.</p>
-        </article>
-
-        <article class="card news-card">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Sig%2C_Mascara.jpg/320px-Sig%2C_Mascara.jpg" alt="نشاط بلدي" style="width:100%;height:160px;object-fit:cover;border-radius:8px;margin-bottom:12px;">
-          <time datetime="2026-04-29">29 أفريل 2026</time>
-          <h3>نشاط بلدي</h3>
-          <p>تنظيم حملة نظافة واسعة عبر الأحياء بمشاركة مختلف المصالح.</p>
-        </article>
+      <div class="news-row">
+        <div class="news-main-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Sig_-_l%27h%C3%B4tel_de_ville.jpg" alt="افتتاح مشروع">
+          <div class="nmc-body">
+            <span class="news-cat">🏗️ مشاريع</span>
+            <h3>افتتاح مشروع تهيئة حضرية جديد بوسط المدينة</h3>
+            <p>تم افتتاح مشروع تهيئة حضرية يشمل رصف الشوارع وتحديث الإضاءة العمومية وإنشاء فضاءات خضراء جديدة.</p>
+            <time>29 أفريل 2026</time>
+          </div>
+        </div>
+        <div class="news-side">
+          <a class="news-mini-card" href="news.html">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Sig%2C_Mascara.jpg/320px-Sig%2C_Mascara.jpg" alt="خبر">
+            <div class="nmc-mini-body"><span class="news-cat" style="font-size:11px;">🌿 بيئة</span><h4>حملة نظافة واسعة عبر أحياء البلدية</h4><time>29 أفريل 2026</time></div>
+          </a>
+          <a class="news-mini-card" href="news.html">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Mascara_-_place_de_la_r%C3%A9publique.jpg/320px-Mascara_-_place_de_la_r%C3%A9publique.jpg" alt="خبر">
+            <div class="nmc-mini-body"><span class="news-cat" style="font-size:11px;">📢 إعلان</span><h4>إعلان هام للمواطنين</h4><time>29 أفريل 2026</time></div>
+          </a>
+          <a class="news-mini-card" href="news.html">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Sig_-_l%27h%C3%B4tel_de_ville.jpg" alt="خبر">
+            <div class="nmc-mini-body"><span class="news-cat" style="font-size:11px;">🏛️ إداري</span><h4>اجتماع المجلس الشعبي البلدي</h4><time>20 أفريل 2026</time></div>
+          </a>
+        </div>
       </div>
-    </section>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="page-section reveal">
+      <div class="about-band">
+        <div class="about-text">
+          <h3>بلدية سيق — في خدمة<br>المواطن الجزائري</h3>
+          <p>بلدية سيق تقع في قلب سهل الغريس بولاية معسكر، وهي من أكبر بلديات الولاية. تسعى الإدارة البلدية دائماً إلى تقديم خدمات عالية الجودة وتطوير بنيتها الرقمية لخدمة المواطنين.</p>
+          <a href="contact.html" class="about-btn">📞 تواصل معنا</a>
+        </div>
+        <div class="about-features">
+          <div class="af-item">
+            <div class="af-icon">🏛️</div>
+            <div><h4>إدارة محلية فعّالة</h4><p>مجلس شعبي بلدي منتخب يسهر على تسيير الشأن المحلي.</p></div>
+          </div>
+          <div class="af-item">
+            <div class="af-icon">💻</div>
+            <div><h4>تحول رقمي تدريجي</h4><p>خدمات رقمية متصاعدة لتسهيل وصول المواطن إلى الإدارة.</p></div>
+          </div>
+          <div class="af-item">
+            <div class="af-icon">🤝</div>
+            <div><h4>شراكة مع المواطن</h4><p>إشراك المواطنين في مسار التنمية المحلية والمشاريع الجوارية.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
-  <footer>
-    <p>جميع الحقوق محفوظة © بلدية سيق</p>
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="logo.png" alt="شعار بلدية سيق">
+        <h3>بلدية سيق</h3>
+        <p>الموقع الرسمي لبلدية سيق، ولاية معسكر — الجزائر. في خدمة المواطن دائماً.</p>
+      </div>
+      <div class="footer-col">
+        <h4>المصالح</h4>
+        <ul>
+          <li><a href="construction.html">البناء والتعمير</a></li>
+          <li><a href="civil.html">الحالة المدنية</a></li>
+          <li><a href="investment.html">الاستثمار</a></li>
+          <li><a href="property.html">أملاك البلدية</a></li>
+          <li><a href="social.html">الشؤون الاجتماعية</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>روابط مفيدة</h4>
+        <ul>
+          <li><a href="news.html">الأخبار</a></li>
+          <li><a href="departments.html">دليل المصالح</a></li>
+          <li><a href="contact.html">اتصل بنا</a></li>
+          <li><a href="https://etatcivil.interieur.gov.dz/" target="_blank" rel="noopener">بوابة الحالة المدنية</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>معلومات التواصل</h4>
+        <div class="fci"><span>📍</span><span>بلدية سيق، ولاية معسكر</span></div>
+        <div class="fci"><span>📞</span><span>045 50 00 00</span></div>
+        <div class="fci"><span>✉️</span><span>contact@commune-sig.dz</span></div>
+        <div class="fci"><span>🕐</span><span>الأحد–الخميس | 08:00–16:00</span></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 بلدية سيق — جميع الحقوق محفوظة</span>
+      <span>الجمهورية الجزائرية الديمقراطية الشعبية</span>
+    </div>
   </footer>
 
   <script src="header-loader.js"></script>
+  <script>
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
+  </script>
 </body>
 </html>
