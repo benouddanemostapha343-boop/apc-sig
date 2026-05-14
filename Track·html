@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تتبع الطلب | بلدية سيق</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+
+    /* ══════════════════════════════════
+       SEARCH HERO
+    ══════════════════════════════════ */
+    .track-hero {
+      background: linear-gradient(160deg, var(--primary-dark) 0%, #0a4a30 60%, #0f6040 100%);
+      padding: 72px 0 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .track-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(185,151,58,0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.04) 0%, transparent 40%);
+    }
+
+    .track-hero-inner {
+      position: relative;
+      z-index: 2;
+      width: var(--container);
+      margin: auto;
+    }
+
+    .track-hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 18px;
+      border-radius: 999px;
+      background: rgba(185,151,58,0.18);
+      border: 1px solid rgba(185,151,58,0.4);
+      color: #ead084;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 22px;
+    }
+
+    .track-hero h1 {
+      margin: 0 0 14px;
+      color: #fff;
+      font-size: clamp(26px, 4vw, 42px);
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .track-hero p {
+      margin: 0 0 40px;
+      color: rgba(255,255,255,0.75);
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    /* ── مربع البحث ── */
+    .search-box {
+      max-width: 560px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 18px;
+      padding: 28px 28px 22px;
+    }
+
+    .search-box label {
+      display: block;
+      color: rgba(255,255,255,0.85);
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-align: right;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-input {
+      flex: 1;
+      height: 52px;
+      padding: 0 18px;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-family: var(--font-ar);
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      outline: none;
+      transition: border-color var(--fast), background var(--fast);
+      text-align: center;
+      direction: ltr;
+    }
+
+    .search-input::placeholder {
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 1px;
+      font-size: 15px;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      background: rgba(255,255,255,0.15);
+    }
+
+    .search-btn {
+      height: 52px;
+      padding: 0 26px;
+      border: none;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font-ar);
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background var(--fast), transform var(--fast), box-shadow var(--fast);
+    }
+
+    .search-btn:hover {
+      background: #a07e2a;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(185,151,58,0.4);
+    }
+
+    .search-btn:active { transform: translateY(0); }
+
+    .search-hint {
+      margin-top: 12px;
+      color: rgba(255,255,255,0.5);
+      font-size: 12.5px;
+      text-align: center;
+    }
+
+    /* ══════════════════════════════════
+       RESULT CARD — تطفو فوق الهيرو
+    ══════════════════════════════════ */
+    .result-wrapper {
+      width: var(--container);
+      margin: -48px auto 0;
+      position: relative;
+      z-index: 10;
+      display: none; /* يظهر بعد البحث */
+    }
+
+    .result-wrapper.visible { display: block; }
+
+    .result-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 24px 60px rgba(7,53,35,0.15);
+      overflow: hidden;
+      animation: slideUp 0.4s cubic-bezier(0.2,0.8,0.2,1) both;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* شريط الحالة العلوي */
+    .result-status-bar {
+      padding: 22px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .result-status-bar.status-pending  { background: #fffbef; border-bottom: 3px solid #f59e0b; }
+    .result-status-bar.status-review   { background: #eff6ff; border-bottom: 3px solid #3b82f6; }
+    .result-status-bar.status-approved { background: #f0fdf6; border-bottom: 3px solid var(--primary); }
+    .result-status-bar.status-rejected { background: #fff1f2; border-bottom: 3px solid #ef4444; }
+    .result-status-bar.status-ready    { background: #f5f3ff; border-bottom: 3px solid #8b5cf6; }
+
+    .status-icon {
+      display: inline-grid;
+      place-items: center;
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      font-size: 26px;
+      flex: 0 0 auto;
+    }
+
+    .status-pending  .status-icon { background: #fef3c7; }
+    .status-review   .status-icon { background: #dbeafe; }
+    .status-approved .status-icon { background: var(--primary-soft); }
+    .status-rejected .status-icon { background: #fee2e2; }
+    .status-ready    .status-icon { background: #ede9fe; }
+
+    .status-text h3 { margin: 0 0 4px; font-size: 18px; font-weight: 800; color: var(--primary-dark); }
+    .status-text p  { margin: 0; font-size: 13.5px; color: var(--muted); }
+
+    .status-pill {
+      margin-inline-start: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .status-pending  .status-pill { background: #fef3c7; color: #92400e; }
+    .status-review   .status-pill { background: #dbeafe; color: #1e3a8a; }
+    .status-approved .status-pill { background: var(--primary-soft); color: var(--primary); }
+    .status-rejected .status-pill { background: #fee2e2; color: #991b1b; }
+    .status-ready    .status-pill { background: #ede9fe; color: #5b21b6; }
+
+    /* معلومات الملف */
+    .result-body {
+      padding: 28px 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .result-info-block { display: flex; flex-direction: column; gap: 14px; }
+
+    .info-row {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding: 14px 16px;
+      background: var(--page);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+
+    .info-row .info-lbl { font-size: 11.5px; color: var(--muted); font-weight: 700; }
+    .info-row .info-val { font-size: 15px; color: var(--primary-dark); font-weight: 800; }
+
+    /* Timeline مراحل المعالجة */
+    .timeline-block {
+      grid-column: 1 / -1;
+      border-top: 1px solid var(--line);
+      padding-top: 24px;
+    }
+
+    .timeline-block h4 {
+      margin: 0 0 20px;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    .timeline {
+      display: flex;
+      gap: 0;
+      position: relative;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      left: 20px;
+      height: 2px;
+      background: var(--line);
+      z-index: 0;
+    }
+
+    .tl-step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .tl-dot {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: inline-grid;
+      place-items: center;
+      font-size: 16px;
+      border: 3px solid var(--line);
+      background: var(--surface);
+      transition: all 0.3s;
+    }
+
+    .tl-step.done .tl-dot {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .tl-step.current .tl-dot {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 0 5px rgba(185,151,58,0.2);
+    }
+
+    .tl-step.pending .tl-dot {
+      background: var(--surface);
+      border-color: var(--line);
+      color: var(--muted);
+    }
+
+    .tl-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .tl-step.done .tl-label    { color: var(--primary); }
+    .tl-step.current .tl-label { color: var(--accent); }
+
+    .tl-date {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* ملاحظة */
+    .result-note {
+      margin: 0 32px 28px;
+      display: flex;
+      gap: 12px;
+      padding: 16px 18px;
+      border-radius: 10px;
+    }
+
+    .result-note.note-info    { background: #eff6ff; border: 1px solid #bfdbfe; }
+    .result-note.note-success { background: #f0fdf6; border: 1px solid rgba(7,95,59,0.2); }
+    .result-note.note-warning { background: #fffbef; border: 1px solid #fde68a; }
+    .result-note.note-error   { background: #fff1f2; border: 1px solid #fecaca; }
+
+    .result-note p { margin: 0; font-size: 13.5px; line-height: 1.75; }
+    .result-note.note-info    p { color: #1e3a8a; }
+    .result-note.note-success p { color: var(--primary-dark); }
+    .result-note.note-warning p { color: #78350f; }
+    .result-note.note-error   p { color: #991b1b; }
+
+    /* ══════════════════════════════════
+       NOT FOUND
+    ══════════════════════════════════ */
+    .not-found-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 56px 32px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(7,53,35,0.1);
+    }
+
+    .not-found-icon { font-size: 56px; margin-bottom: 18px; }
+    .not-found-card h3 { margin: 0 0 10px; color: var(--primary-dark); font-size: 20px; font-weight: 800; }
+    .not-found-card p  { margin: 0 0 24px; color: var(--muted); font-size: 14px; line-height: 1.8; max-width: 360px; margin-inline: auto; }
+
+    /* ══════════════════════════════════
+       SECTION — أمثلة أرقام
+    ══════════════════════════════════ */
+    .demo-section {
+      width: var(--container);
+      margin: 56px auto 0;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .demo-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: transform var(--fast), box-shadow var(--fast), background var(--fast);
+    }
+
+    .demo-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(7,53,35,0.1);
+      background: var(--primary-soft);
+    }
+
+    .demo-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 48px; height: 48px; border-radius: 10px;
+      background: var(--primary-soft); color: var(--primary);
+      font-size: 13px; font-weight: 800; flex: 0 0 auto;
+      letter-spacing: 0.5px;
+    }
+
+    .demo-card h4 { margin: 0 0 3px; font-size: 14px; font-weight: 800; color: var(--primary-dark); }
+    .demo-card p  { margin: 0; font-size: 12.5px; color: var(--muted); }
+
+    .demo-status-dot {
+      width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; margin-inline-start: auto;
+    }
+
+    .dot-pending  { background: #f59e0b; }
+    .dot-review   { background: #3b82f6; }
+    .dot-approved { background: var(--primary); }
+    .dot-ready    { background: #8b5cf6; }
+
+    /* ══════════════════════════════════
+       INFO BOXES
+    ══════════════════════════════════ */
+    .info-boxes {
+      width: var(--container);
+      margin: 48px auto 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .ib {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .ib-icon {
+      display: inline-grid; place-items: center;
+      width: 44px; height: 44px; border-radius: 10px;
+      background: var(--primary-soft); font-size: 22px; flex: 0 0 auto;
+    }
+
+    .ib h4 { margin: 0 0 4px; font-size: 14px; font-weight: 800; color: var(--primary-dark); }
+    .ib p  { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .result-body { grid-template-columns: 1fr; }
+      .result-status-bar { padding: 18px 20px; }
+      .result-body { padding: 20px; }
+      .result-note { margin: 0 20px 20px; }
+      .status-pill { margin-inline-start: 0; }
+      .timeline { flex-direction: column; gap: 0; }
+      .timeline::before { display: none; }
+      .tl-step { flex-direction: row; align-items: flex-start; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+      .tl-step:last-child { border-bottom: none; }
+      .tl-label, .tl-date { text-align: right; }
+      .track-hero { padding: 52px 0 80px; }
+      .search-row { flex-direction: column; }
+      .search-btn { height: 48px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+  <main>
+
+    <!-- ══════ HERO ══════ -->
+    <section class="track-hero">
+      <div class="track-hero-inner">
+        <div class="track-hero-badge">🔍 تتبع الطلبات الإدارية</div>
+        <h1>تابع حالة ملفك<br>في أي وقت</h1>
+        <p>أدخل رقم الملف الذي تسلّمته عند إيداع طلبك لمعرفة مرحلة المعالجة الحالية.</p>
+
+        <div class="search-box">
+          <label for="trackInput">رقم الملف / وصل الإيداع</label>
+          <div class="search-row">
+            <input
+              type="text"
+              id="trackInput"
+              class="search-input"
+              placeholder="مثال: SIG-2026-0042"
+              maxlength="20"
+              autocomplete="off"
+              spellcheck="false"
+            >
+            <button class="search-btn" onclick="trackRequest()">🔍 تتبع</button>
+          </div>
+          <p class="search-hint">الرقم مكتوب على وصل الإيداع الذي سلّمتك إياه المصلحة</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════ RESULT ══════ -->
+    <div class="result-wrapper" id="resultWrapper">
+      <div class="result-card" id="resultCard">
+        <!-- يُحشى بـ JS -->
+      </div>
+    </div>
+
+    <!-- ══════ DEMO CARDS ══════ -->
+    <div class="demo-section">
+      <div style="margin-bottom:8px;">
+        <span style="display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:999px;background:var(--primary-soft);color:var(--primary);font-size:12.5px;font-weight:800;">🧪 للتجربة</span>
+      </div>
+      <h2 style="margin:8px 0 4px;font-size:22px;font-weight:800;color:var(--primary-dark);">أرقام تجريبية جاهزة</h2>
+      <p style="margin:0;color:var(--muted);font-size:14px;">انقر على أي بطاقة لاختبار النظام</p>
+
+      <div class="demo-grid">
+        <div class="demo-card" onclick="fillAndTrack('SIG-2026-0042')">
+          <div class="demo-num">0042</div>
+          <div><h4>رخصة بناء</h4><p>قيد الدراسة التقنية</p></div>
+          <div class="demo-status-dot dot-review"></div>
+        </div>
+        <div class="demo-card" onclick="fillAndTrack('SIG-2026-0017')">
+          <div class="demo-num">0017</div>
+          <div><h4>شهادة إقامة</h4><p>جاهزة للاستلام</p></div>
+          <div class="demo-status-dot dot-ready"></div>
+        </div>
+        <div class="demo-card" onclick="fillAndTrack('SIG-2026-0055')">
+          <div class="demo-num">0055</div>
+          <div><h4>كراء محل بلدي</h4><p>في انتظار المعالجة</p></div>
+          <div class="demo-status-dot dot-pending"></div>
+        </div>
+        <div class="demo-card" onclick="fillAndTrack('SIG-2026-0031')">
+          <div class="demo-num">0031</div>
+          <div><h4>مساعدة اجتماعية</h4><p>تمت الموافقة</p></div>
+          <div class="demo-status-dot dot-approved"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ INFO BOXES ══════ -->
+    <div class="info-boxes">
+      <div class="ib">
+        <div class="ib-icon">📋</div>
+        <div><h4>أين رقم الملف؟</h4><p>مكتوب على الوصل الورقي الذي سلّمته المصلحة عند إيداع طلبك.</p></div>
+      </div>
+      <div class="ib">
+        <div class="ib-icon">⏱️</div>
+        <div><h4>آجال المعالجة</h4><p>تتراوح بين 7 و60 يوماً حسب نوع الخدمة والمصلحة المعنية.</p></div>
+      </div>
+      <div class="ib">
+        <div class="ib-icon">📞</div>
+        <div><h4>لا تجد نتيجة؟</h4><p>اتصل بالمصلحة مباشرة على الرقم: <strong>045 50 00 00</strong></p></div>
+      </div>
+      <div class="ib">
+        <div class="ib-icon">🔔</div>
+        <div><h4>عند الجاهزية</h4><p>ستُخطَر عبر الهاتف أو بمراجعة هذه الصفحة بانتظام.</p></div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>جميع الحقوق محفوظة © بلدية سيق</p>
+  </footer>
+
+  <script src="header-loader.js"></script>
+  <script>
+
+    /* ════════════════════════════════════════
+       قاعدة بيانات تجريبية للملفات
+    ════════════════════════════════════════ */
+    const REQUESTS = {
+      "SIG-2026-0042": {
+        type:        "رخصة البناء",
+        service:     "مصلحة البناء والتعمير",
+        name:        "محمد ب.",
+        submitted:   "12 مارس 2026",
+        updated:     "28 أفريل 2026",
+        status:      "review",
+        statusLabel: "قيد الدراسة التقنية",
+        statusIcon:  "🔎",
+        steps: [
+          { label: "إيداع الملف",      icon: "📥", state: "done",    date: "12 مارس" },
+          { label: "فحص إداري",        icon: "✅", state: "done",    date: "18 مارس" },
+          { label: "دراسة تقنية",      icon: "🔎", state: "current", date: "جارية" },
+          { label: "قرار البلدية",     icon: "🏛️", state: "pending", date: "—" },
+          { label: "استلام الوثيقة",   icon: "📄", state: "pending", date: "—" },
+        ],
+        note: { type: "info", text: "ملفك حالياً قيد الدراسة التقنية من طرف مهندس البلدية. يُتوقع صدور القرار خلال 10 أيام عمل." }
+      },
+
+      "SIG-2026-0017": {
+        type:        "شهادة الإقامة",
+        service:     "مصلحة الحالة المدنية",
+        name:        "فاطمة ك.",
+        submitted:   "02 ماي 2026",
+        updated:     "04 ماي 2026",
+        status:      "ready",
+        statusLabel: "جاهزة للاستلام",
+        statusIcon:  "🎉",
+        steps: [
+          { label: "إيداع الطلب",    icon: "📥", state: "done",    date: "02 ماي" },
+          { label: "فحص الوثائق",   icon: "✅", state: "done",    date: "02 ماي" },
+          { label: "المعالجة",       icon: "⚙️", state: "done",    date: "03 ماي" },
+          { label: "التوقيع",        icon: "✍️", state: "done",    date: "04 ماي" },
+          { label: "جاهزة للسحب",   icon: "🎉", state: "current", date: "04 ماي" },
+        ],
+        note: { type: "success", text: "✅ وثيقتك جاهزة! يمكنك سحبها من مصلحة الحالة المدنية خلال ساعات العمل: الأحد–الخميس | 08:00–16:00" }
+      },
+
+      "SIG-2026-0055": {
+        type:        "طلب كراء محل تجاري",
+        service:     "مصلحة أملاك البلدية",
+        name:        "كريم ع.",
+        submitted:   "07 ماي 2026",
+        updated:     "07 ماي 2026",
+        status:      "pending",
+        statusLabel: "في انتظار المعالجة",
+        statusIcon:  "⏳",
+        steps: [
+          { label: "إيداع الطلب",      icon: "📥", state: "done",    date: "07 ماي" },
+          { label: "فحص إداري",        icon: "✅", state: "current", date: "جارٍ" },
+          { label: "عرض على اللجنة",   icon: "👥", state: "pending", date: "—" },
+          { label: "قرار المجلس",      icon: "🏛️", state: "pending", date: "—" },
+          { label: "توقيع العقد",      icon: "📝", state: "pending", date: "—" },
+        ],
+        note: { type: "warning", text: "⏳ طلبك قيد الفحص الإداري الأولي. سيتم التواصل معك لتكملة أي وثائق ناقصة إن وجدت." }
+      },
+
+      "SIG-2026-0031": {
+        type:        "طلب مساعدة اجتماعية",
+        service:     "مصلحة الشؤون الاجتماعية",
+        name:        "أمينة ت.",
+        submitted:   "15 أفريل 2026",
+        updated:     "22 أفريل 2026",
+        status:      "approved",
+        statusLabel: "تمت الموافقة",
+        statusIcon:  "✅",
+        steps: [
+          { label: "إيداع الطلب",      icon: "📥", state: "done",    date: "15 أفريل" },
+          { label: "الدراسة الاجتماعية", icon: "🔍", state: "done",   date: "18 أفريل" },
+          { label: "توصية المصلحة",    icon: "📋", state: "done",    date: "20 أفريل" },
+          { label: "قرار الموافقة",    icon: "✅", state: "done",    date: "22 أفريل" },
+          { label: "صرف المساعدة",     icon: "💰", state: "current", date: "قريباً" },
+        ],
+        note: { type: "success", text: "✅ تمت الموافقة على طلبك. ستُصرف المساعدة خلال الأسبوع القادم. سيتم التواصل معك هاتفياً." }
+      }
+    };
+
+    /* ════════════════════════════════════════
+       دوال التتبع
+    ════════════════════════════════════════ */
+    function fillAndTrack(num) {
+      document.getElementById('trackInput').value = num;
+      trackRequest();
+    }
+
+    function trackRequest() {
+      const raw = document.getElementById('trackInput').value.trim().toUpperCase();
+      const wrapper = document.getElementById('resultWrapper');
+      const card    = document.getElementById('resultCard');
+
+      if (!raw) {
+        document.getElementById('trackInput').focus();
+        document.getElementById('trackInput').style.borderColor = '#ef4444';
+        setTimeout(() => document.getElementById('trackInput').style.borderColor = '', 1500);
+        return;
+      }
+
+      // إظهار مؤشر تحميل
+      wrapper.classList.add('visible');
+      card.innerHTML = renderLoading();
+
+      // محاكاة تأخير الشبكة
+      setTimeout(() => {
+        const data = REQUESTS[raw];
+        card.innerHTML = data ? renderResult(data, raw) : renderNotFound(raw);
+        wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 700);
+    }
+
+    /* ════ Render Functions ════ */
+    function renderLoading() {
+      return `
+        <div style="padding:56px 32px;text-align:center;">
+          <div style="display:inline-block;width:44px;height:44px;border:4px solid var(--line);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:18px;"></div>
+          <p style="margin:0;color:var(--muted);font-size:15px;font-weight:600;">جارٍ البحث عن ملفك…</p>
+          <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+        </div>`;
+    }
+
+    function renderResult(d, num) {
+      const stepsHTML = d.steps.map(s => `
+        <div class="tl-step ${s.state}">
+          <div class="tl-dot">${s.state === 'done' ? '✓' : s.icon}</div>
+          <div class="tl-label">${s.label}</div>
+          <div class="tl-date">${s.date}</div>
+        </div>`).join('');
+
+      const noteClass = {
+        info:    'note-info',
+        success: 'note-success',
+        warning: 'note-warning',
+        error:   'note-error'
+      }[d.note.type];
+
+      return `
+        <div class="result-status-bar status-${d.status}">
+          <div class="status-icon">${d.statusIcon}</div>
+          <div class="status-text">
+            <h3>${d.type}</h3>
+            <p>${d.service} &nbsp;·&nbsp; رقم الملف: <strong>${num}</strong></p>
+          </div>
+          <div class="status-pill">${d.statusIcon} ${d.statusLabel}</div>
+        </div>
+
+        <div class="result-body">
+          <div class="result-info-block">
+            <div class="info-row">
+              <span class="info-lbl">نوع الطلب</span>
+              <span class="info-val">${d.type}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-lbl">المصلحة المعنية</span>
+              <span class="info-val">${d.service}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-lbl">صاحب الطلب</span>
+              <span class="info-val">${d.name}</span>
+            </div>
+          </div>
+          <div class="result-info-block">
+            <div class="info-row">
+              <span class="info-lbl">تاريخ الإيداع</span>
+              <span class="info-val">${d.submitted}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-lbl">آخر تحديث</span>
+              <span class="info-val">${d.updated}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-lbl">الحالة الراهنة</span>
+              <span class="info-val">${d.statusLabel}</span>
+            </div>
+          </div>
+
+          <div class="timeline-block">
+            <h4>📍 مراحل معالجة الملف</h4>
+            <div class="timeline">${stepsHTML}</div>
+          </div>
+        </div>
+
+        <div class="result-note ${noteClass}">
+          <p>${d.note.text}</p>
+        </div>`;
+    }
+
+    function renderNotFound(num) {
+      return `
+        <div class="not-found-card">
+          <div class="not-found-icon">🔍</div>
+          <h3>لم يُعثر على الملف</h3>
+          <p>لا يوجد ملف بالرقم <strong>"${num}"</strong> في قاعدة البيانات.<br>تأكد من الرقم أو تواصل مع المصلحة مباشرة.</p>
+          <a href="contact.html" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:9px;background:var(--primary);color:#fff;font-size:14px;font-weight:800;text-decoration:none;">📞 اتصل بالمصلحة</a>
+        </div>`;
+    }
+
+    /* إرسال بالضغط على Enter */
+    document.getElementById('trackInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') trackRequest();
+    });
+  </script>
+</body>
+</html>
