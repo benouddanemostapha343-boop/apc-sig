@@ -776,6 +776,16 @@
     document.getElementById('trackInput').addEventListener('keydown', e => {
       if (e.key === 'Enter') trackRequest();
     });
+
+    /* قراءة الرقم من الصفحة الرئيسية تلقائياً */
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = sessionStorage.getItem('trackNum');
+      if (saved) {
+        document.getElementById('trackInput').value = saved;
+        sessionStorage.removeItem('trackNum');
+        trackRequest();
+      }
+    });
   </script>
 </body>
 </html>
