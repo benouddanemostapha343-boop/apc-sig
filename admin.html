@@ -1,45 +1,1229 @@
-<div class="top-bar">
-  <div class="top-meta">
-    <span class="portal-label">البوابة الرسمية لبلدية سيق</span>
-    <span id="date">...</span>
-  </div>
-  <div class="top-links">
-    <a href="track.html">🔍 تتبع طلبك</a>
-    <a href="contact.html">اتصل بنا</a>
-    <a href="admin.html" style="opacity:0.45;font-size:11px;">⚙️</a>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة الإدارة | بلدية سيق</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #0f1117;
+      --surface:  #1a1d27;
+      --surface2: #22263a;
+      --border:   #2e3245;
+      --primary:  #006b3f;
+      --primary-l:#00994f;
+      --accent:   #c69b3c;
+      --accent-l: #e8b84b;
+      --text:     #e8eaf0;
+      --muted:    #7c82a0;
+      --danger:   #ef4444;
+      --success:  #22c55e;
+      --info:     #3b82f6;
+      --font:     'Noto Kufi Arabic', Tahoma, sans-serif;
+      --fast:     0.2s ease;
+      --radius:   12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ══════════ LOGIN SCREEN ══════════ */
+    #loginScreen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .login-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+      animation: fadeIn 0.4s ease both;
+    }
+
+    @keyframes fadeIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+    .login-logo {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      border: 3px solid var(--primary);
+      margin: 0 auto 20px;
+      display: block;
+    }
+
+    .login-card h2 { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+    .login-card p  { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+
+    .login-field {
+      margin-bottom: 14px;
+      text-align: right;
+    }
+
+    .login-field label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .login-field input {
+      width: 100%;
+      height: 46px;
+      padding: 0 14px;
+      border-radius: 9px;
+      border: 1.5px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 15px;
+      outline: none;
+      transition: border-color var(--fast);
+    }
+
+    .login-field input:focus { border-color: var(--primary-l); }
+
+    .login-error {
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #fca5a5;
+      margin-bottom: 14px;
+      display: none;
+    }
+
+    .login-btn {
+      width: 100%;
+      height: 48px;
+      border: none;
+      border-radius: 9px;
+      background: var(--primary);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background var(--fast), transform var(--fast);
+      margin-top: 6px;
+    }
+
+    .login-btn:hover { background: var(--primary-l); transform: translateY(-2px); }
+
+    .login-hint {
+      margin-top: 20px;
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: 10px 12px;
+      line-height: 1.7;
+    }
+
+    /* ══════════ LAYOUT ══════════ */
+    #appScreen { display: none; flex: 1; }
+    #appScreen.visible { display: flex; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      z-index: 100;
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 22px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-brand img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); }
+    .sidebar-brand h3  { font-size: 13.5px; font-weight: 800; color: var(--text); line-height: 1.3; }
+    .sidebar-brand p   { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-section-label {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 12px 8px 6px;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      border-radius: 9px;
+      font-family: var(--font);
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--muted);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      text-align: right;
+      transition: background var(--fast), color var(--fast);
+    }
+
+    .nav-btn:hover { background: var(--surface2); color: var(--text); }
+    .nav-btn.active { background: rgba(0,107,63,0.15); color: var(--primary-l); font-weight: 800; }
+    .nav-btn .nav-icon { font-size: 16px; flex: 0 0 auto; }
+
+    .sidebar-footer {
+      padding: 16px 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 9px;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 700;
+      color: #fca5a5;
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.15);
+      cursor: pointer;
+      width: 100%;
+      text-align: right;
+      transition: background var(--fast);
+    }
+
+    .logout-btn:hover { background: rgba(239,68,68,0.15); }
+
+    /* Main content */
+    .main {
+      margin-right: 240px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Top bar */
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 28px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-title { font-size: 16px; font-weight: 800; color: var(--text); }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+    .admin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(0,107,63,0.15);
+      border: 1px solid rgba(0,153,79,0.25);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary-l);
+    }
+
+    /* Content area */
+    .content {
+      flex: 1;
+      padding: 28px;
+    }
+
+    /* ══════════ PANELS ══════════ */
+    .panel { display: none; }
+    .panel.active { display: block; animation: fadeIn 0.3s ease both; }
+
+    /* ══════════ STATS ROW ══════════ */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .stat-icon {
+      display: inline-grid;
+      place-items: center;
+      width: 46px; height: 46px;
+      border-radius: 11px;
+      font-size: 22px;
+      flex: 0 0 auto;
+    }
+
+    .stat-icon.green  { background: rgba(0,107,63,0.15); }
+    .stat-icon.gold   { background: rgba(198,155,60,0.15); }
+    .stat-icon.blue   { background: rgba(59,130,246,0.15); }
+    .stat-icon.red    { background: rgba(239,68,68,0.12); }
+
+    .stat-num  { font-size: 26px; font-weight: 800; color: var(--text); line-height: 1; }
+    .stat-lbl  { font-size: 12px; color: var(--muted); margin-top: 3px; font-weight: 600; }
+
+    /* ══════════ SECTION HEADER ══════════ */
+    .section-hd {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .section-hd h2 { font-size: 17px; font-weight: 800; color: var(--text); }
+    .section-hd p  { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+    /* ══════════ BUTTONS ══════════ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-family: var(--font);
+      font-size: 13.5px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: all var(--fast);
+      white-space: nowrap;
+    }
+
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-l); transform: translateY(-1px); }
+
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-accent:hover { background: var(--accent-l); transform: translateY(-1px); }
+
+    .btn-ghost {
+      background: var(--surface2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { color: var(--text); background: var(--border); }
+
+    .btn-danger { background: rgba(239,68,68,0.12); color: #fca5a5; border: 1px solid rgba(239,68,68,0.2); }
+    .btn-danger:hover { background: rgba(239,68,68,0.22); }
+
+    .btn-sm { padding: 6px 12px; font-size: 12.5px; }
+
+    /* ══════════ NEWS TABLE ══════════ */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .table-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .search-field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 180px;
+      height: 38px;
+      padding: 0 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+    }
+
+    .search-field input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 13.5px;
+    }
+
+    .search-field input::placeholder { color: var(--muted); }
+
+    .filter-select {
+      height: 38px;
+      padding: 0 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    thead th {
+      padding: 12px 16px;
+      text-align: right;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--muted);
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background var(--fast);
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--surface2); }
+
+    td {
+      padding: 14px 16px;
+      font-size: 13.5px;
+      color: var(--text);
+      vertical-align: middle;
+    }
+
+    .news-title-cell { font-weight: 700; max-width: 260px; }
+    .news-title-cell p { font-size: 12px; color: var(--muted); margin-top: 3px; font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; }
+
+    .cat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .cat-projects  { background: rgba(0,107,63,0.15);  color: #4ade80; }
+    .cat-announce  { background: rgba(59,130,246,0.15); color: #93c5fd; }
+    .cat-env       { background: rgba(34,197,94,0.12);  color: #86efac; }
+    .cat-admin     { background: rgba(139,92,246,0.15); color: #c4b5fd; }
+    .cat-social    { background: rgba(249,115,22,0.15); color: #fdba74; }
+
+    .pub-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .pub-published { background: rgba(34,197,94,0.12);  color: #4ade80; }
+    .pub-draft     { background: rgba(198,155,60,0.12); color: #fbbf24; }
+    .pub-hidden    { background: rgba(239,68,68,0.1);   color: #f87171; }
+
+    .td-actions { display: flex; gap: 6px; align-items: center; }
+
+    /* ══════════ MODAL ══════════ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--fast);
+    }
+
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      width: 100%;
+      max-width: 640px;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: scale(0.95);
+      transition: transform var(--fast);
+      box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+    }
+
+    .modal-overlay.open .modal { transform: scale(1); }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 1;
+    }
+
+    .modal-header h3 { font-size: 16px; font-weight: 800; }
+
+    .close-btn {
+      display: inline-grid;
+      place-items: center;
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 18px;
+      cursor: pointer;
+      transition: all var(--fast);
+    }
+
+    .close-btn:hover { background: var(--border); color: var(--text); }
+
+    .modal-body { padding: 24px; }
+
+    .form-group { margin-bottom: 18px; }
+
+    .form-group label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 9px;
+      border: 1.5px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      outline: none;
+      transition: border-color var(--fast);
+    }
+
+    .form-input:focus { border-color: var(--primary-l); }
+
+    textarea.form-input {
+      height: 120px;
+      resize: vertical;
+      line-height: 1.7;
+    }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      position: sticky;
+      bottom: 0;
+    }
+
+    /* ══════════ TOAST ══════════ */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 9999;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 18px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      animation: toastIn 0.3s cubic-bezier(0.2,0.8,0.2,1) both;
+      max-width: 320px;
+    }
+
+    @keyframes toastIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+    .toast.success { background: #14532d; border: 1px solid #166534; color: #86efac; }
+    .toast.error   { background: #450a0a; border: 1px solid #7f1d1d; color: #fca5a5; }
+    .toast.info    { background: #1e3a5f; border: 1px solid #1e40af; color: #93c5fd; }
+
+    /* ══════════ CONFIRM DIALOG ══════════ */
+    .confirm-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--fast);
+    }
+    .confirm-overlay.open { opacity: 1; pointer-events: all; }
+
+    .confirm-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+      transform: scale(0.96);
+      transition: transform var(--fast);
+    }
+    .confirm-overlay.open .confirm-box { transform: scale(1); }
+    .confirm-box .icon { font-size: 42px; margin-bottom: 14px; }
+    .confirm-box h3 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
+    .confirm-box p  { font-size: 13.5px; color: var(--muted); margin-bottom: 24px; line-height: 1.7; }
+    .confirm-btns { display: flex; gap: 10px; justify-content: center; }
+
+    /* ══════════ EMPTY STATE ══════════ */
+    .empty-state {
+      text-align: center;
+      padding: 56px 24px;
+      color: var(--muted);
+    }
+    .empty-state .empty-icon { font-size: 48px; margin-bottom: 14px; }
+    .empty-state h3 { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+    .empty-state p  { font-size: 13.5px; line-height: 1.7; }
+
+    /* ══════════ RESPONSIVE ══════════ */
+    @media (max-width: 900px) {
+      .sidebar { width: 200px; }
+      .main { margin-right: 200px; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 640px) {
+      .sidebar { transform: translateX(100%); transition: transform var(--fast); }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-right: 0; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--surface); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════ LOGIN ══════════════════ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <img src="logo.png" class="login-logo" alt="logo" onerror="this.style.display='none'">
+    <h2>لوحة إدارة بلدية سيق</h2>
+    <p>قم بتسجيل الدخول للوصول إلى لوحة التحكم</p>
+
+    <div class="login-error" id="loginError">كلمة المرور أو اسم المستخدم غير صحيح</div>
+
+    <div class="login-field">
+      <label>اسم المستخدم</label>
+      <input type="text" id="loginUser" placeholder="admin" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label>كلمة المرور</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password"
+             onkeydown="if(event.key==='Enter') doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">🔐 تسجيل الدخول</button>
+
+    <div class="login-hint">
+      للتجربة: <strong>admin</strong> / <strong>sig2026</strong>
+    </div>
   </div>
 </div>
 
-<header class="site-header">
-  <div class="header-container">
-    <img src="logo.png" alt="شعار بلدية سيق" class="logo">
-    <div class="header-text">
-      <div class="arabic-title">
-        <p class="kicker">الجمهورية الجزائرية الديمقراطية الشعبية</p>
-        <h1>بلدية سيق</h1>
-        <p>ولاية معسكر</p>
+<!-- ══════════════════ APP ══════════════════ -->
+<div id="appScreen">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <img src="logo.png" alt="logo" onerror="this.style.display='none'">
+      <div>
+        <h3>بلدية سيق</h3>
+        <p>لوحة الإدارة</p>
       </div>
     </div>
-    <button class="menu-toggle" id="menuToggle" type="button" aria-controls="main-nav">☰</button>
-  </div>
-</header>
 
-<div class="menu-overlay" id="menuOverlay"></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">القائمة الرئيسية</div>
+      <button class="nav-btn active" onclick="showPanel('dashboard', this)">
+        <span class="nav-icon">📊</span> لوحة التحكم
+      </button>
+      <button class="nav-btn" onclick="showPanel('news', this)">
+        <span class="nav-icon">📰</span> إدارة الأخبار
+      </button>
 
-<nav class="main-nav" id="main-nav">
-  <a href="index.html">الرئيسية</a>
-  <a href="news.html">الأخبار</a>
-  <div class="dropdown">
-    <button class="dropbtn">مصالح البلدية</button>
-    <div class="dropdown-content">
-      <a href="construction.html">البناء والتعمير</a>
-      <a href="investment.html">الاستثمار</a>
-      <a href="property.html">أملاك البلدية</a>
-      <a href="social.html">الشؤون الاجتماعية</a>
-      <a href="civil.html">الحالة المدنية</a>
+      <div class="nav-section-label" style="margin-top:8px;">الموقع</div>
+      <button class="nav-btn" onclick="window.open('index.html','_blank')">
+        <span class="nav-icon">🌐</span> عرض الموقع
+      </button>
+      <button class="nav-btn" onclick="window.open('news.html','_blank')">
+        <span class="nav-icon">📄</span> صفحة الأخبار
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="doLogout()">
+        <span>🚪</span> تسجيل الخروج
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <span class="topbar-title" id="topbarTitle">لوحة التحكم</span>
+      <div class="topbar-right">
+        <span class="admin-badge">🟢 مسجل الدخول — admin</span>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ══ DASHBOARD PANEL ══ -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-icon green">📰</div>
+            <div>
+              <div class="stat-num" id="statTotal">0</div>
+              <div class="stat-lbl">مجموع الأخبار</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon gold">✅</div>
+            <div>
+              <div class="stat-num" id="statPublished">0</div>
+              <div class="stat-lbl">منشورة</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue">📝</div>
+            <div>
+              <div class="stat-num" id="statDraft">0</div>
+              <div class="stat-lbl">مسودة</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon red">🙈</div>
+            <div>
+              <div class="stat-num" id="statHidden">0</div>
+              <div class="stat-lbl">مخفية</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-hd">
+          <div>
+            <h2>آخر الأخبار المضافة</h2>
+            <p>أحدث 5 أخبار في النظام</p>
+          </div>
+          <button class="btn btn-primary" onclick="showPanel('news', document.querySelector('.nav-btn:nth-child(2))'))">
+            ← إدارة كل الأخبار
+          </button>
+        </div>
+
+        <div class="table-wrap" id="dashRecentTable">
+          <table>
+            <thead>
+              <tr>
+                <th>العنوان</th>
+                <th>التصنيف</th>
+                <th>التاريخ</th>
+                <th>الحالة</th>
+              </tr>
+            </thead>
+            <tbody id="dashRecentBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ══ NEWS PANEL ══ -->
+      <div class="panel" id="panel-news">
+        <div class="section-hd">
+          <div>
+            <h2>إدارة الأخبار</h2>
+            <p>إضافة وتعديل وحذف الأخبار المنشورة على الموقع</p>
+          </div>
+          <button class="btn btn-primary" onclick="openModal()">＋ إضافة خبر جديد</button>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-toolbar">
+            <div class="search-field">
+              <span>🔍</span>
+              <input type="text" placeholder="ابحث في الأخبار..." oninput="filterNews(this.value)" id="newsSearch">
+            </div>
+            <select class="filter-select" onchange="filterByCat(this.value)" id="catFilter">
+              <option value="">كل التصنيفات</option>
+              <option value="projects">🏗️ مشاريع</option>
+              <option value="announce">📢 إعلانات</option>
+              <option value="env">🌿 بيئة</option>
+              <option value="admin">🏛️ إداري</option>
+              <option value="social">🤝 اجتماعي</option>
+            </select>
+            <select class="filter-select" onchange="filterByStatus(this.value)" id="statusFilter">
+              <option value="">كل الحالات</option>
+              <option value="published">منشورة</option>
+              <option value="draft">مسودة</option>
+              <option value="hidden">مخفية</option>
+            </select>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>العنوان والمحتوى</th>
+                <th>التصنيف</th>
+                <th>التاريخ</th>
+                <th>الحالة</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="newsTableBody"></tbody>
+          </table>
+
+          <div id="emptyState" class="empty-state" style="display:none;">
+            <div class="empty-icon">📭</div>
+            <h3>لا توجد نتائج</h3>
+            <p>جرّب تغيير معايير البحث أو أضف خبراً جديداً.</p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /appScreen -->
+
+<!-- ══════════════════ MODAL ══════════════════ -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">إضافة خبر جديد</h3>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>عنوان الخبر *</label>
+        <input type="text" class="form-input" id="fTitle" placeholder="أدخل عنوان الخبر...">
+      </div>
+      <div class="form-group">
+        <label>المحتوى / الوصف *</label>
+        <textarea class="form-input" id="fContent" placeholder="اكتب تفاصيل الخبر هنا..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>التصنيف</label>
+          <select class="form-input" id="fCategory">
+            <option value="projects">🏗️ مشاريع</option>
+            <option value="announce">📢 إعلانات</option>
+            <option value="env">🌿 بيئة ونظافة</option>
+            <option value="admin">🏛️ إداري</option>
+            <option value="social">🤝 اجتماعي</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>الحالة</label>
+          <select class="form-input" id="fStatus">
+            <option value="published">✅ منشورة</option>
+            <option value="draft">📝 مسودة</option>
+            <option value="hidden">🙈 مخفية</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>التاريخ</label>
+          <input type="date" class="form-input" id="fDate">
+        </div>
+        <div class="form-group">
+          <label>رابط الصورة (اختياري)</label>
+          <input type="url" class="form-input" id="fImage" placeholder="https://...">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="saveNews()">💾 حفظ</button>
+      <button class="btn btn-ghost" onclick="closeModal()">إلغاء</button>
     </div>
   </div>
-  <a href="track.html" class="nav-track-link">🔍 تتبع طلبك</a>
-  <a href="contact.html">اتصل بنا</a>
-    <a href="admin.html" style="opacity:0.45;font-size:11px;">⚙️</a>
-</nav>
+</div>
+
+<!-- ══════════════════ CONFIRM ══════════════════ -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="icon">🗑️</div>
+    <h3>تأكيد الحذف</h3>
+    <p id="confirmMsg">هل أنت متأكد من حذف هذا الخبر؟ لا يمكن التراجع عن هذا الإجراء.</p>
+    <div class="confirm-btns">
+      <button class="btn btn-danger" id="confirmYesBtn">نعم، احذف</button>
+      <button class="btn btn-ghost" onclick="closeConfirm()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+/* ══════════════════════════════════════
+   DATA — أخبار تجريبية مبدئية
+══════════════════════════════════════ */
+const CATEGORIES = {
+  projects: { label: '🏗️ مشاريع',   cls: 'cat-projects' },
+  announce: { label: '📢 إعلانات',   cls: 'cat-announce' },
+  env:      { label: '🌿 بيئة',      cls: 'cat-env'      },
+  admin:    { label: '🏛️ إداري',    cls: 'cat-admin'    },
+  social:   { label: '🤝 اجتماعي',   cls: 'cat-social'   },
+};
+
+const STATUS = {
+  published: { label: '✅ منشورة', cls: 'pub-published' },
+  draft:     { label: '📝 مسودة',  cls: 'pub-draft'     },
+  hidden:    { label: '🙈 مخفية',  cls: 'pub-hidden'    },
+};
+
+let newsData = JSON.parse(localStorage.getItem('sig_news') || 'null') || [
+  { id:1, title:'افتتاح مشروع تهيئة حضرية بوسط المدينة',   content:'تم افتتاح مشروع تهيئة حضرية يشمل رصف الشوارع وتحديث الإضاءة العمومية.',     category:'projects', status:'published', date:'2026-04-29', image:'' },
+  { id:2, title:'حملة نظافة واسعة عبر أحياء البلدية',      content:'تنظيم حملة نظافة شاملة بمشاركة جميع مصالح البلدية وجمعيات الأحياء.',           category:'env',      status:'published', date:'2026-04-29', image:'' },
+  { id:3, title:'إعلان هام للمواطنين',                      content:'يرجى من المواطنين متابعة المستجدات والإعلانات الرسمية عبر الموقع.',              category:'announce', status:'published', date:'2026-04-29', image:'' },
+  { id:4, title:'اجتماع المجلس الشعبي البلدي',              content:'انعقد اجتماع المجلس الشعبي البلدي للنظر في عدد من الملفات الإدارية.',            category:'admin',    status:'draft',     date:'2026-04-20', image:'' },
+  { id:5, title:'توزيع المساعدات الاجتماعية',               content:'تُعلن بلدية سيق عن موعد توزيع المساعدات الاجتماعية للأسر المحتاجة.',           category:'social',   status:'published', date:'2026-04-15', image:'' },
+];
+
+let nextId = Math.max(...newsData.map(n => n.id)) + 1;
+let editingId = null;
+let filteredData = [...newsData];
+let pendingDeleteId = null;
+
+/* ══════════ AUTH ══════════ */
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginError');
+
+  if (u === 'admin' && p === 'sig2026') {
+    err.style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appScreen').classList.add('visible');
+    init();
+  } else {
+    err.style.display = 'block';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginPass').focus();
+  }
+}
+
+function doLogout() {
+  document.getElementById('appScreen').classList.remove('visible');
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+}
+
+document.getElementById('loginPass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+/* ══════════ INIT ══════════ */
+function init() {
+  renderNewsTable(newsData);
+  updateStats();
+  renderDashRecent();
+  document.getElementById('fDate').value = new Date().toISOString().split('T')[0];
+}
+
+/* ══════════ PANELS ══════════ */
+function showPanel(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const titles = { dashboard: 'لوحة التحكم', news: 'إدارة الأخبار' };
+  document.getElementById('topbarTitle').textContent = titles[id] || '';
+}
+
+/* ══════════ STATS ══════════ */
+function updateStats() {
+  document.getElementById('statTotal').textContent     = newsData.length;
+  document.getElementById('statPublished').textContent = newsData.filter(n => n.status === 'published').length;
+  document.getElementById('statDraft').textContent     = newsData.filter(n => n.status === 'draft').length;
+  document.getElementById('statHidden').textContent    = newsData.filter(n => n.status === 'hidden').length;
+}
+
+/* ══════════ RENDER TABLE ══════════ */
+function renderNewsTable(data) {
+  const tbody = document.getElementById('newsTableBody');
+  const empty = document.getElementById('emptyState');
+
+  if (!data.length) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+
+  empty.style.display = 'none';
+  tbody.innerHTML = data.map((n, i) => `
+    <tr>
+      <td style="color:var(--muted);font-size:12px;">${String(i+1).padStart(2,'0')}</td>
+      <td class="news-title-cell">
+        ${escHtml(n.title)}
+        <p>${escHtml(n.content.slice(0,80))}…</p>
+      </td>
+      <td><span class="cat-badge ${CATEGORIES[n.category]?.cls || ''}">${CATEGORIES[n.category]?.label || n.category}</span></td>
+      <td style="font-size:13px;color:var(--muted);">${formatDate(n.date)}</td>
+      <td><span class="pub-badge ${STATUS[n.status]?.cls || ''}">${STATUS[n.status]?.label || n.status}</span></td>
+      <td>
+        <div class="td-actions">
+          <button class="btn btn-ghost btn-sm" onclick="editNews(${n.id})">✏️ تعديل</button>
+          <button class="btn btn-danger btn-sm" onclick="confirmDelete(${n.id})">🗑️</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+/* ══════════ DASHBOARD RECENT ══════════ */
+function renderDashRecent() {
+  const recent = [...newsData].sort((a,b) => new Date(b.date)-new Date(a.date)).slice(0,5);
+  document.getElementById('dashRecentBody').innerHTML = recent.map(n => `
+    <tr>
+      <td class="news-title-cell" style="max-width:300px;">${escHtml(n.title)}</td>
+      <td><span class="cat-badge ${CATEGORIES[n.category]?.cls||''}">${CATEGORIES[n.category]?.label||n.category}</span></td>
+      <td style="font-size:13px;color:var(--muted);">${formatDate(n.date)}</td>
+      <td><span class="pub-badge ${STATUS[n.status]?.cls||''}">${STATUS[n.status]?.label||n.status}</span></td>
+    </tr>`).join('');
+}
+
+/* ══════════ FILTER ══════════ */
+let _searchVal = '', _catVal = '', _statusVal = '';
+
+function applyFilters() {
+  filteredData = newsData.filter(n => {
+    const matchSearch = !_searchVal || n.title.includes(_searchVal) || n.content.includes(_searchVal);
+    const matchCat    = !_catVal    || n.category === _catVal;
+    const matchStatus = !_statusVal || n.status   === _statusVal;
+    return matchSearch && matchCat && matchStatus;
+  });
+  renderNewsTable(filteredData);
+}
+
+function filterNews(v)     { _searchVal = v;  applyFilters(); }
+function filterByCat(v)    { _catVal    = v;  applyFilters(); }
+function filterByStatus(v) { _statusVal = v;  applyFilters(); }
+
+/* ══════════ MODAL ══════════ */
+function openModal(id = null) {
+  editingId = id;
+  document.getElementById('modalTitle').textContent = id ? 'تعديل الخبر' : 'إضافة خبر جديد';
+
+  if (id) {
+    const n = newsData.find(x => x.id === id);
+    document.getElementById('fTitle').value    = n.title;
+    document.getElementById('fContent').value  = n.content;
+    document.getElementById('fCategory').value = n.category;
+    document.getElementById('fStatus').value   = n.status;
+    document.getElementById('fDate').value     = n.date;
+    document.getElementById('fImage').value    = n.image || '';
+  } else {
+    document.getElementById('fTitle').value    = '';
+    document.getElementById('fContent').value  = '';
+    document.getElementById('fCategory').value = 'projects';
+    document.getElementById('fStatus').value   = 'published';
+    document.getElementById('fDate').value     = new Date().toISOString().split('T')[0];
+    document.getElementById('fImage').value    = '';
+  }
+
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('fTitle').focus(), 200);
+}
+
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+function closeModalOutside(e) { if (e.target.id === 'modalOverlay') closeModal(); }
+
+function editNews(id) {
+  openModal(id);
+  // تأكد من الوصول للتبويب الصحيح
+  showPanel('news', document.querySelectorAll('.nav-btn')[1]);
+}
+
+/* ══════════ SAVE ══════════ */
+function saveNews() {
+  const title   = document.getElementById('fTitle').value.trim();
+  const content = document.getElementById('fContent').value.trim();
+
+  if (!title || !content) {
+    toast('يرجى ملء العنوان والمحتوى على الأقل', 'error');
+    return;
+  }
+
+  const entry = {
+    id:       editingId || nextId++,
+    title,
+    content,
+    category: document.getElementById('fCategory').value,
+    status:   document.getElementById('fStatus').value,
+    date:     document.getElementById('fDate').value || new Date().toISOString().split('T')[0],
+    image:    document.getElementById('fImage').value.trim(),
+  };
+
+  if (editingId) {
+    const idx = newsData.findIndex(n => n.id === editingId);
+    newsData[idx] = entry;
+    toast('تم تحديث الخبر بنجاح ✅', 'success');
+  } else {
+    newsData.unshift(entry);
+    toast('تمت إضافة الخبر بنجاح ✅', 'success');
+  }
+
+  persist();
+  applyFilters();
+  updateStats();
+  renderDashRecent();
+  closeModal();
+}
+
+/* ══════════ DELETE ══════════ */
+function confirmDelete(id) {
+  pendingDeleteId = id;
+  const n = newsData.find(x => x.id === id);
+  document.getElementById('confirmMsg').textContent =
+    `هل أنت متأكد من حذف الخبر "${n?.title}"؟ لا يمكن التراجع عن هذا الإجراء.`;
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+
+document.getElementById('confirmYesBtn').addEventListener('click', () => {
+  if (pendingDeleteId !== null) {
+    newsData = newsData.filter(n => n.id !== pendingDeleteId);
+    persist();
+    applyFilters();
+    updateStats();
+    renderDashRecent();
+    toast('تم حذف الخبر', 'info');
+    pendingDeleteId = null;
+  }
+  closeConfirm();
+});
+
+function closeConfirm() {
+  document.getElementById('confirmOverlay').classList.remove('open');
+  pendingDeleteId = null;
+}
+
+/* ══════════ PERSIST ══════════ */
+function persist() {
+  localStorage.setItem('sig_news', JSON.stringify(newsData));
+}
+
+/* ══════════ TOAST ══════════ */
+function toast(msg, type = 'success') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  document.getElementById('toastContainer').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+/* ══════════ HELPERS ══════════ */
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function formatDate(d) {
+  if (!d) return '—';
+  try {
+    return new Date(d).toLocaleDateString('ar-DZ', { day:'numeric', month:'long', year:'numeric' });
+  } catch { return d; }
+}
+</script>
+</body>
+</html>
