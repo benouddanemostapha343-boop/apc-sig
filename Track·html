@@ -463,7 +463,7 @@
       </div>
     </div>
 
-    <!-- ══════ DEMO CARDS ══════ -->
+    -- ══════ DEMO CARDS ══════ -->
     <div class="demo-section">
       <div style="margin-bottom:8px;">
         <span style="display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:999px;background:var(--primary-soft);color:var(--primary);font-size:12.5px;font-weight:800;">🧪 للتجربة</span>
@@ -559,51 +559,7 @@
         steps: [
           { label: "إيداع الطلب",    icon: "📥", state: "done",    date: "02 ماي" },
           { label: "فحص الوثائق",   icon: "✅", state: "done",    date: "02 ماي" },
-          { label: "المعالجة",       icon: "⚙️", state: "done",    date: "03 ماي" },
-          { label: "التوقيع",        icon: "✍️", state: "done",    date: "04 ماي" },
-          { label: "جاهزة للسحب",   icon: "🎉", state: "current", date: "04 ماي" },
-        ],
-        note: { type: "success", text: "✅ وثيقتك جاهزة! يمكنك سحبها من مصلحة الحالة المدنية خلال ساعات العمل: الأحد–الخميس | 08:00–16:00" }
-      },
 
-      "SIG-2026-0055": {
-        type:        "طلب كراء محل تجاري",
-        service:     "مصلحة أملاك البلدية",
-        name:        "كريم ع.",
-        submitted:   "07 ماي 2026",
-        updated:     "07 ماي 2026",
-        status:      "pending",
-        statusLabel: "في انتظار المعالجة",
-        statusIcon:  "⏳",
-        steps: [
-          { label: "إيداع الطلب",      icon: "📥", state: "done",    date: "07 ماي" },
-          { label: "فحص إداري",        icon: "✅", state: "current", date: "جارٍ" },
-          { label: "عرض على اللجنة",   icon: "👥", state: "pending", date: "—" },
-          { label: "قرار المجلس",      icon: "🏛️", state: "pending", date: "—" },
-          { label: "توقيع العقد",      icon: "📝", state: "pending", date: "—" },
-        ],
-        note: { type: "warning", text: "⏳ طلبك قيد الفحص الإداري الأولي. سيتم التواصل معك لتكملة أي وثائق ناقصة إن وجدت." }
-      },
-
-      "SIG-2026-0031": {
-        type:        "طلب مساعدة اجتماعية",
-        service:     "مصلحة الشؤون الاجتماعية",
-        name:        "أمينة ت.",
-        submitted:   "15 أفريل 2026",
-        updated:     "22 أفريل 2026",
-        status:      "approved",
-        statusLabel: "تمت الموافقة",
-        statusIcon:  "✅",
-        steps: [
-          { label: "إيداع الطلب",      icon: "📥", state: "done",    date: "15 أفريل" },
-          { label: "الدراسة الاجتماعية", icon: "🔍", state: "done",   date: "18 أفريل" },
-          { label: "توصية المصلحة",    icon: "📋", state: "done",    date: "20 أفريل" },
-          { label: "قرار الموافقة",    icon: "✅", state: "done",    date: "22 أفريل" },
-          { label: "صرف المساعدة",     icon: "💰", state: "current", date: "قريباً" },
-        ],
-        note: { type: "success", text: "✅ تمت الموافقة على طلبك. ستُصرف المساعدة خلال الأسبوع القادم. سيتم التواصل معك هاتفياً." }
-      }
-    };
 
     /* ════════════════════════════════════════
        دوال التتبع
