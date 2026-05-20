@@ -1565,6 +1565,44 @@ footer p {
   background: rgba(185,151,58,0.35);
   color: #ffe3a3;
 }
+/* MOBILE FIX - complaints page */
+
+html,
+body{
+    overflow-x:hidden;
+    max-width:100%;
+}
+
+@media (max-width:768px){
+
+    .complaints-layout{
+        width:100%;
+        overflow:hidden;
+    }
+
+    .tracker-input-row{
+        flex-direction:column;
+    }
+
+    .tracker-input-row button{
+        width:100%;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select{
+        box-sizing:border-box;
+        max-width:100%;
+    }
+
+    .section,
+    .form-card,
+    .complaints-sidebar{
+        width:100%;
+        max-width:100%;
+        overflow:hidden;
+    }
+}
 
 /* ══════════════════════════════════
    CSS VARS إضافية للصفحات الجديدة
