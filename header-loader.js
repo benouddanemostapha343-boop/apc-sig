@@ -41,16 +41,21 @@ document.addEventListener("DOMContentLoaded", () => {
         window.scrollTo(0, savedScrollY);
       }
 
-      toggle.addEventListener("click", () => {
-        nav.classList.contains("active") ? closeMenu() : openMenu();
-      });
+    if (toggle && nav && overlay) {
 
-      overlay.addEventListener("click", closeMenu);
+  toggle.addEventListener("click", () => {
+    nav.classList.contains("active")
+      ? closeMenu()
+      : openMenu();
+  });
 
-      nav.querySelectorAll("a").forEach(link => {
-        link.addEventListener("click", closeMenu);
-      });
+  overlay.addEventListener("click", closeMenu);
 
+  nav.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", closeMenu);
+  });
+
+}
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeMenu();
       });
