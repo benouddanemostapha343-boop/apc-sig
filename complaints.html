@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الشكاوى والاقتراحات | بلدية سيق</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+
+    /* ══════════════════════════════════
+       COMPLAINTS PAGE — SPECIFIC STYLES
+    ══════════════════════════════════ */
+
+    /* TYPE SELECTOR */
+    .type-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 32px;
+    }
+
+    .type-card {
+      position: relative;
+      background: var(--surface);
+      border: 2px solid var(--line);
+      border-radius: 14px;
+      padding: 22px 18px;
+      cursor: pointer;
+      transition: border-color var(--fast), box-shadow var(--fast), transform var(--fast);
+      text-align: center;
+      user-select: none;
+    }
+
+    .type-card input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0; height: 0;
+    }
+
+    .type-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(7,53,35,0.1);
+    }
+
+    .type-card.selected {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+      box-shadow: 0 0 0 3px rgba(7,95,59,0.12);
+    }
+
+    .type-card.selected-suggestion {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      box-shadow: 0 0 0 3px rgba(185,151,58,0.15);
+    }
+
+    .type-card.selected-compliment {
+      border-color: #2563eb;
+      background: rgba(37,99,235,0.05);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+    }
+
+    .type-icon {
+      font-size: 36px;
+      margin-bottom: 10px;
+      display: block;
+      line-height: 1;
+    }
+
+    .type-card h4 {
+      margin: 0 0 4px;
+      color: var(--primary-dark);
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .type-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+
+    .type-check {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      font-size: 12px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .type-card.selected .type-check,
+    .type-card.selected-suggestion .type-check,
+    .type-card.selected-compliment .type-check {
+      display: flex;
+    }
+
+    .type-card.selected-suggestion .type-check { background: var(--accent); }
+    .type-card.selected-compliment .type-check { background: #2563eb; }
+
+    /* MAIN FORM LAYOUT */
+    .complaints-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 28px;
+      margin-top: 32px;
+      align-items: start;
+    }
+
+    /* FORM CARD */
+    .form-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 36px;
+      box-shadow: 0 8px 28px rgba(7,53,35,0.07);
+    }
+
+    .form-card h3 {
+      margin: 0 0 28px;
+      color: var(--primary-dark);
+      font-size: 19px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .form-section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 24px 0 14px;
+      color: var(--primary-dark);
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .form-section-title::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 7px;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .form-group label .required {
+      color: #e53e3e;
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface-muted);
+      color: var(--ink);
+      font-family: var(--font-ar);
+      font-size: 15px;
+      outline: none;
+      transition: border-color var(--fast), box-shadow var(--fast), background var(--fast);
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(7,95,59,0.1);
+      background: #fff;
+    }
+
+    .form-group textarea {
+      height: 140px;
+      resize: vertical;
+      line-height: 1.75;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .anon-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      background: var(--page);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      cursor: pointer;
+      margin-bottom: 18px;
+      transition: background var(--fast), border-color var(--fast);
+    }
+
+    .anon-toggle:hover {
+      background: var(--primary-soft);
+      border-color: rgba(7,95,59,0.25);
+    }
+
+    .anon-toggle input[type="checkbox"] {
+      width: 18px; height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .anon-toggle span {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .anon-toggle small {
+      font-size: 12px;
+      color: var(--muted);
+      margin-right: auto;
+    }
+
+    /* FILE UPLOAD */
+    .file-upload-area {
+      border: 2px dashed var(--line);
+      border-radius: 12px;
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color var(--fast), background var(--fast);
+      background: var(--page);
+      position: relative;
+    }
+
+    .file-upload-area:hover,
+    .file-upload-area.dragover {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+    }
+
+    .file-upload-area input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .file-upload-area .upload-icon {
+      font-size: 32px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .file-upload-area p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height: 1.7;
+    }
+
+    .file-upload-area strong {
+      color: var(--primary);
+    }
+
+    .file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    .file-item .file-name {
+      flex: 1;
+      color: var(--ink);
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-item button {
+      border: none;
+      background: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0 4px;
+      line-height: 1;
+      transition: color var(--fast);
+    }
+
+    .file-item button:hover { color: #e53e3e; }
+
+    /* SUBMIT BTN */
+    .btn-submit-complaint {
+      width: 100%;
+      min-height: 54px;
+      padding: 0 28px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), #096842);
+      color: #fff;
+      font-family: var(--font-ar);
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: transform var(--fast), box-shadow var(--fast), background var(--fast);
+      margin-top: 8px;
+      box-shadow: 0 8px 22px rgba(7,53,35,0.2);
+    }
+
+    .btn-submit-complaint:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(7,53,35,0.25);
+      background: linear-gradient(135deg, #096842, var(--primary-dark));
+    }
+
+    .btn-submit-complaint:active {
+      transform: translateY(0);
+    }
+
+    .btn-submit-complaint.loading {
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    /* SIDEBAR */
+    .complaints-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* STATUS TRACKER */
+    .status-tracker {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 4px 16px rgba(7,53,35,0.06);
+    }
+
+    .status-tracker h4 {
+      margin: 0 0 16px;
+      color: var(--primary-dark);
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tracker-input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tracker-input-row input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      background: var(--page);
+      color: var(--ink);
+      font-family: var(--font-ar);
+      font-size: 14px;
+      outline: none;
+      transition: border-color var(--fast);
+    }
+
+    .tracker-input-row input:focus {
+      border-color: var(--primary);
+    }
+
+    .tracker-input-row button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #fff;
+      font-family: var(--font-ar);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background var(--fast);
+      white-space: nowrap;
+    }
+
+    .tracker-input-row button:hover { background: var(--primary-dark); }
+
+    .tracker-result {
+      margin-top: 14px;
+      display: none;
+    }
+
+    .tracker-result.show { display: block; }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-processing { background: #dbeafe; color: #1e40af; }
+    .status-resolved { background: #d1fae5; color: #065f46; }
+    .status-closed { background: #f3f4f6; color: #374151; }
+
+    .tracker-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 14px;
+    }
+
+    .tracker-step {
+      display: flex;
+      gap: 12px;
+      position: relative;
+    }
+
+    .tracker-step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: 11px;
+      top: 26px;
+      width: 2px;
+      height: calc(100% - 10px);
+      background: var(--line);
+    }
+
+    .tracker-step.done:not(:last-child)::after { background: var(--primary); }
+
+    .step-dot {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      border: 2px solid var(--line);
+      background: var(--page);
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      font-size: 10px;
+      margin-top: 2px;
+      z-index: 1;
+    }
+
+    .tracker-step.done .step-dot {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .tracker-step.current .step-dot {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 0 3px rgba(185,151,58,0.25);
+    }
+
+    .step-info {
+      padding-bottom: 16px;
+    }
+
+    .step-info strong {
+      display: block;
+      color: var(--ink);
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+
+    .step-info span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* INFO BOX */
+    .info-box {
+      background: var(--primary-soft);
+      border: 1px solid rgba(7,95,59,0.15);
+      border-right: 4px solid var(--primary);
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+
+    .info-box h4 {
+      margin: 0 0 10px;
+      color: var(--primary-dark);
+      font-size: 14.5px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .info-box ul {
+      margin: 0;
+      padding: 0 18px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 2;
+    }
+
+    /* STATS ROW */
+    .complaints-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 32px;
+    }
+
+    .cstat {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px 16px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(7,53,35,0.05);
+    }
+
+    .cstat strong {
+      display: block;
+      color: var(--primary-dark);
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .cstat span {
+      color: var(--muted);
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    .cstat.accent strong { color: var(--accent); }
+    .cstat.green strong { color: #059669; }
+
+    /* SUCCESS OVERLAY */
+    .success-overlay {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 48px 24px;
+      gap: 16px;
+    }
+
+    .success-overlay.show { display: flex; }
+    .success-overlay.show ~ * { display: none; }
+
+    .success-icon {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: #d1fae5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+    }
+
+    .success-overlay h3 {
+      margin: 0;
+      color: var(--primary-dark);
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .success-overlay p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14.5px;
+      line-height: 1.8;
+      max-width: 380px;
+    }
+
+    .ticket-number {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      background: var(--primary-soft);
+      border: 1.5px solid rgba(7,95,59,0.2);
+      border-radius: 10px;
+      color: var(--primary-dark);
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      font-family: monospace;
+    }
+
+    @media (max-width: 960px) {
+      .complaints-layout {
+        grid-template-columns: 1fr;
+      }
+      .type-selector {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      .complaints-sidebar {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      .status-tracker, .info-box {
+        flex: 1 1 280px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .type-selector {
+        grid-template-columns: 1fr;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .form-card {
+        padding: 22px 18px;
+      }
+      .complaints-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .type-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        text-align: right;
+        padding: 16px 18px;
+      }
+      .type-icon {
+        font-size: 28px;
+        margin-bottom: 0;
+        flex: 0 0 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-content">
+        <span class="badge">📣 بوابة الشكاوى الرسمية</span>
+        <h2>الشكاوى والاقتراحات</h2>
+        <p>منصة رسمية لتلقّي شكاوى المواطنين، اقتراحاتهم وملاحظاتهم. كل بلاغ يُعالج ويُتابع رسمياً من قِبل مصالح البلدية.</p>
+        <div class="hero-actions">
+          <a href="#complaint-form" class="btn primary">تقديم شكوى</a>
+          <a href="#track" class="btn secondary">🔍 تتبع ملفك</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="quick-stats">
+      <div><strong>48 س</strong><span>متوسط وقت الرد</span></div>
+      <div><strong>+240</strong><span>شكوى معالجة هذا العام</span></div>
+      <div><strong>87%</strong><span>نسبة الحل</span></div>
+    </section>
+
+    <!-- NUMBERS SECTION -->
+    <section class="section">
+      <div class="section-heading">
+        <span>الشفافية والإحصاء</span>
+        <h2>إحصاءات الشكاوى لعام 2026</h2>
+      </div>
+      <div class="complaints-stats">
+        <div class="cstat">
+          <strong>243</strong>
+          <span>شكوى مُستلمة</span>
+        </div>
+        <div class="cstat green">
+          <strong>211</strong>
+          <span>شكوى مُعالجة</span>
+        </div>
+        <div class="cstat accent">
+          <strong>32</strong>
+          <span>قيد المعالجة</span>
+        </div>
+        <div class="cstat">
+          <strong>87%</strong>
+          <span>نسبة الرضا</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPLAINT FORM SECTION -->
+    <section class="section" id="complaint-form">
+      <div class="section-heading">
+        <span>تقديم ملف</span>
+        <h2>اختر نوع بلاغك</h2>
+      </div>
+
+      <!-- TYPE SELECTOR -->
+      <div class="type-selector">
+        <label class="type-card selected" data-type="complaint">
+          <input type="radio" name="report-type" value="complaint" checked>
+          <div class="type-check">✓</div>
+          <span class="type-icon">⚠️</span>
+          <h4>شكوى رسمية</h4>
+          <p>للإبلاغ عن مشكل أو انتهاك يستوجب التدخل البلدي</p>
+        </label>
+        <label class="type-card" data-type="suggestion">
+          <input type="radio" name="report-type" value="suggestion">
+          <div class="type-check">✓</div>
+          <span class="type-icon">💡</span>
+          <h4>اقتراح</h4>
+          <p>أفكار لتحسين خدمات وبنية البلدية</p>
+        </label>
+        <label class="type-card" data-type="compliment">
+          <input type="radio" name="report-type" value="compliment">
+          <div class="type-check">✓</div>
+          <span class="type-icon">🌟</span>
+          <h4>إشادة</h4>
+          <p>تقدير عمل موظف أو مصلحة بلدية متميزة</p>
+        </label>
+      </div>
+
+      <!-- MAIN LAYOUT -->
+      <div class="complaints-layout">
+
+        <!-- FORM CARD -->
+        <div class="form-card" id="formCard">
+
+          <!-- SUCCESS STATE -->
+          <div class="success-overlay" id="successOverlay">
+            <div class="success-icon">✅</div>
+            <h3>تم إرسال بلاغك بنجاح!</h3>
+            <p>لقد استلمنا ملفك وسيتم مراجعته من قِبل المصالح المختصة خلال 48 ساعة عمل. احتفظ برقم المرجع لمتابعة حالة بلاغك.</p>
+            <div class="ticket-number" id="ticketNumber">SIG-2026-0000</div>
+            <p style="font-size:13px;color:var(--muted);">احتفظ بهذا الرقم لمتابعة حالة شكواك</p>
+            <button onclick="resetForm()" class="btn primary" style="margin-top:8px;">تقديم بلاغ جديد</button>
+          </div>
+
+          <h3 id="formTitle">⚠️ تقديم شكوى رسمية</h3>
+
+          <!-- SECTION: معلومات الاتصال -->
+          <div class="form-section-title">معلومات المُبلِّغ</div>
+
+          <label class="anon-toggle">
+            <input type="checkbox" id="anonymousCheck" onchange="toggleAnonymous(this)">
+            <span>🔒 تقديم بلاغ مجهول الهوية</span>
+            <small>لن تُحفظ بياناتك</small>
+          </label>
+
+          <div id="identityFields">
+            <div class="form-row">
+              <div class="form-group">
+                <label>الاسم الكامل <span class="required">*</span></label>
+                <input type="text" id="fullName" placeholder="أدخل اسمك الكامل">
+              </div>
+              <div class="form-group">
+                <label>رقم الهاتف</label>
+                <input type="tel" id="phone" placeholder="06 XX XX XX XX">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>البريد الإلكتروني</label>
+              <input type="email" id="email" placeholder="example@email.com">
+            </div>
+          </div>
+
+          <!-- SECTION: تفاصيل البلاغ -->
+          <div class="form-section-title">تفاصيل البلاغ</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>المصلحة المعنية <span class="required">*</span></label>
+              <select id="department">
+                <option value="">-- اختر المصلحة --</option>
+                <option>البناء والتعمير</option>
+                <option>الحالة المدنية</option>
+                <option>الشؤون الاجتماعية</option>
+                <option>أملاك البلدية</option>
+                <option>الاستثمار</option>
+                <option>النظافة والبيئة</option>
+                <option>الإنارة العمومية</option>
+                <option>الطرقات والتهيئة</option>
+                <option>أخرى</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>درجة الأولوية</label>
+              <select id="priority">
+                <option value="normal">عادية</option>
+                <option value="urgent">عاجلة</option>
+                <option value="critical">حرجة — تتطلب تدخلاً فورياً</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>الموضوع <span class="required">*</span></label>
+            <input type="text" id="subject" placeholder="أدخل عنوان مختصر للمشكلة">
+          </div>
+
+          <div class="form-group">
+            <label>الحي / المنطقة المعنية</label>
+            <input type="text" id="location" placeholder="مثال: حي الزيتون، شارع الاستقلال...">
+          </div>
+
+          <div class="form-group">
+            <label>وصف تفصيلي للمشكلة <span class="required">*</span></label>
+            <textarea id="description" placeholder="صِف المشكلة أو الاقتراح بالتفصيل — كلما كانت المعلومات دقيقة، كان التدخل أسرع وأفعل..."></textarea>
+          </div>
+
+          <!-- SECTION: المرفقات -->
+          <div class="form-section-title">المرفقات (اختياري)</div>
+
+          <div class="file-upload-area" id="dropZone">
+            <input type="file" id="fileInput" multiple accept="image/*,.pdf" onchange="handleFiles(this.files)">
+            <span class="upload-icon">📎</span>
+            <p><strong>انقر لاختيار ملفات</strong> أو اسحبها هنا</p>
+            <p style="font-size:12px;margin-top:4px;">صور أو PDF — الحد الأقصى 5 ملفات، 10 ميغابايت لكل ملف</p>
+          </div>
+          <div class="file-list" id="fileList"></div>
+
+          <!-- SUBMIT -->
+          <button class="btn-submit-complaint" id="submitBtn" onclick="submitComplaint()">
+            <span id="submitIcon">📤</span>
+            <span id="submitText">إرسال البلاغ</span>
+          </button>
+        </div>
+
+        <!-- SIDEBAR -->
+        <aside class="complaints-sidebar" id="track">
+
+          <!-- STATUS TRACKER -->
+          <div class="status-tracker">
+            <h4>🔍 تتبع حالة شكواك</h4>
+            <p style="margin:0 0 14px;color:var(--muted);font-size:13px;">أدخل رقم المرجع الذي استلمته عند تقديم البلاغ.</p>
+            <div class="tracker-input-row">
+              <input type="text" id="trackInput" placeholder="SIG-2026-XXXX">
+              <button onclick="trackComplaint()">بحث</button>
+            </div>
+            <div class="tracker-result" id="trackerResult">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                <strong style="font-size:13px;color:var(--primary-dark);">مشكلة في الإنارة العمومية</strong>
+                <span class="status-badge status-processing">⚙️ قيد المعالجة</span>
+              </div>
+              <div class="tracker-steps">
+                <div class="tracker-step done">
+                  <div class="step-dot">✓</div>
+                  <div class="step-info">
+                    <strong>استُلم البلاغ</strong>
+                    <span>15 ماي 2026</span>
+                  </div>
+                </div>
+                <div class="tracker-step done">
+                  <div class="step-dot">✓</div>
+                  <div class="step-info">
+                    <strong>قيد المراجعة</strong>
+                    <span>16 ماي 2026</span>
+                  </div>
+                </div>
+                <div class="tracker-step current">
+                  <div class="step-dot">⚙</div>
+                  <div class="step-info">
+                    <strong>معالجة ميدانية</strong>
+                    <span>جارٍ الآن</span>
+                  </div>
+                </div>
+                <div class="tracker-step">
+                  <div class="step-dot"></div>
+                  <div class="step-info">
+                    <strong>تم الحل</strong>
+                    <span>—</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- INFO BOX -->
+          <div class="info-box">
+            <h4>📋 تعليمات التقديم</h4>
+            <ul>
+              <li>أدخل بياناتك الكاملة لضمان الرد.</li>
+              <li>حدّد المصلحة المعنية بدقة.</li>
+              <li>أرفق صوراً تدعم بلاغك إن أمكن.</li>
+              <li>سيُرسَل لك رقم مرجعي فور الإرسال.</li>
+              <li>الرد الأولي خلال 48 ساعة عمل.</li>
+              <li>للتواصل المباشر: <a href="contact.html" style="color:var(--primary);font-weight:700;">اتصل بنا</a></li>
+            </ul>
+          </div>
+
+          <!-- QUICK LINKS -->
+          <div class="info-box" style="background:var(--accent-soft);border-right-color:var(--accent);border-color:rgba(185,151,58,0.2);">
+            <h4 style="color:#7a5e1a;">📞 تواصل مباشر</h4>
+            <p style="margin:0;color:var(--muted);font-size:13px;line-height:1.9;">
+              هاتف البلدية: <strong style="color:var(--ink);">045 50 00 00</strong><br>
+              ساعات العمل: الأحد–الخميس<br>
+              08:00 – 16:00
+            </p>
+          </div>
+
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer><p>جميع الحقوق محفوظة © بلدية سيق</p></footer>
+
+  <script src="header-loader.js"></script>
+  <script>
+    // ── TYPE SELECTION ──────────────────────────────────
+    const typeCards = document.querySelectorAll('.type-card');
+    const formTitle = document.getElementById('formTitle');
+
+    const typeConfig = {
+      complaint: { title: '⚠️ تقديم شكوى رسمية', selectedClass: 'selected' },
+      suggestion: { title: '💡 تقديم اقتراح', selectedClass: 'selected-suggestion' },
+      compliment: { title: '🌟 تقديم إشادة', selectedClass: 'selected-compliment' }
+    };
+
+    typeCards.forEach(card => {
+      card.addEventListener('click', () => {
+        typeCards.forEach(c => c.classList.remove('selected', 'selected-suggestion', 'selected-compliment'));
+        const type = card.dataset.type;
+        card.classList.add(typeConfig[type].selectedClass);
+        formTitle.textContent = typeConfig[type].title;
+        card.querySelector('input[type="radio"]').checked = true;
+      });
+    });
+
+    // ── ANONYMOUS TOGGLE ──────────────────────────────────
+    function toggleAnonymous(checkbox) {
+      const fields = document.getElementById('identityFields');
+      fields.style.display = checkbox.checked ? 'none' : 'block';
+      if (checkbox.checked) {
+        fields.querySelectorAll('input').forEach(i => i.value = '');
+      }
+    }
+
+    // ── FILE HANDLING ──────────────────────────────────
+    let attachedFiles = [];
+
+    function handleFiles(files) {
+      for (const file of files) {
+        if (attachedFiles.length >= 5) break;
+        if (!attachedFiles.find(f => f.name === file.name)) {
+          attachedFiles.push(file);
+        }
+      }
+      renderFileList();
+    }
+
+    function renderFileList() {
+      const list = document.getElementById('fileList');
+      list.innerHTML = attachedFiles.map((file, i) => `
+        <div class="file-item">
+          <span>${file.type.startsWith('image/') ? '🖼️' : '📄'}</span>
+          <span class="file-name">${file.name}</span>
+          <span style="color:var(--muted);font-size:11px;">${(file.size / 1024).toFixed(0)} KB</span>
+          <button onclick="removeFile(${i})">✕</button>
+        </div>
+      `).join('');
+    }
+
+    function removeFile(index) {
+      attachedFiles.splice(index, 1);
+      renderFileList();
+    }
+
+    // Drag & drop
+    const dropZone = document.getElementById('dropZone');
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      handleFiles(e.dataTransfer.files);
+    });
+
+    // ── SUBMIT ──────────────────────────────────
+    function submitComplaint() {
+      const isAnon = document.getElementById('anonymousCheck').checked;
+      const name = document.getElementById('fullName').value.trim();
+      const dept = document.getElementById('department').value;
+      const subject = document.getElementById('subject').value.trim();
+      const desc = document.getElementById('description').value.trim();
+
+      if (!isAnon && !name) { alert('يرجى إدخال اسمك الكامل أو تفعيل خيار الإخفاء.'); return; }
+      if (!dept) { alert('يرجى اختيار المصلحة المعنية.'); return; }
+      if (!subject) { alert('يرجى إدخال موضوع البلاغ.'); return; }
+      if (!desc) { alert('يرجى كتابة وصف تفصيلي للمشكلة.'); return; }
+
+      // Simulate loading
+      const btn = document.getElementById('submitBtn');
+      btn.classList.add('loading');
+      document.getElementById('submitIcon').textContent = '⏳';
+      document.getElementById('submitText').textContent = 'جارٍ الإرسال...';
+
+      setTimeout(() => {
+        // Generate ticket number
+        const ticketNum = 'SIG-2026-' + Math.floor(1000 + Math.random() * 9000);
+        document.getElementById('ticketNumber').textContent = ticketNum;
+
+        // Show success
+        document.getElementById('successOverlay').classList.add('show');
+
+        // Hide form elements
+        document.getElementById('formTitle').style.display = 'none';
+        document.querySelectorAll('.form-section-title, .form-group, .anon-toggle, .file-upload-area, .file-list, .btn-submit-complaint').forEach(el => el.style.display = 'none');
+      }, 1400);
+    }
+
+    function resetForm() {
+      document.getElementById('successOverlay').classList.remove('show');
+      document.getElementById('formTitle').style.display = '';
+      document.querySelectorAll('.form-section-title, .form-group, .anon-toggle, .file-upload-area, .btn-submit-complaint').forEach(el => el.style.display = '');
+      document.getElementById('identityFields').style.display = '';
+      document.getElementById('anonymousCheck').checked = false;
+
+      // Reset fields
+      ['fullName','phone','email','department','priority','subject','location','description'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = id === 'priority' ? 'normal' : '';
+      });
+
+      attachedFiles = [];
+      renderFileList();
+
+      const btn = document.getElementById('submitBtn');
+      btn.classList.remove('loading');
+      document.getElementById('submitIcon').textContent = '📤';
+      document.getElementById('submitText').textContent = 'إرسال البلاغ';
+    }
+
+    // ── TRACKER ──────────────────────────────────
+    function trackComplaint() {
+      const val = document.getElementById('trackInput').value.trim();
+      if (!val) { alert('يرجى إدخال رقم المرجع.'); return; }
+      document.getElementById('trackerResult').classList.add('show');
+    }
+
+    // ── FADE IN ANIMATION ──────────────────────────────────
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
