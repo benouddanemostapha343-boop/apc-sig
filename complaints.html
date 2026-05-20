@@ -1019,272 +1019,72 @@
     });
 
     // ── SUBMIT ──────────────────────────────────
-    async function submitComplaint() {
-
-  const isAnon =
-    document.getElementById('anonymousCheck').checked;
-
-  const name =
-    document.getElementById('fullName').value.trim();
-
-  const phone =
-    document.getElementById('phone').value.trim();
-
-  const email =
-    document.getElementById('email').value.trim();
-
-  const department =
-    document.getElementById('department').value;
-
-  const subject =
-    document.getElementById('subject').value.trim();
-
-  const description =
-    document.getElementById('description').value.trim();
-
-  // التحقق من الحقول
-
-  if (!isAnon && !name) {
-    alert(
-      'يرجى إدخال اسمك أو اختيار الإرسال المجهول'
-    );
-    return;
-  }
-
-  if (!department) {
-    alert(
-      'يرجى اختيار المصلحة المعنية'
-    );
-    return;
-  }
-
-  if (!subject) {
-    alert(
-      'يرجى إدخال الموضوع'
-    );
-    return;
-  }
-
-  if (!description) {
-    alert(
-      'يرجى كتابة وصف البلاغ'
-    );
-    return;
-  }
-
-  // رقم مرجعي
-
-  const reference =
-    "SIG-" + Date.now();
-
-  // زر التحميل
-
-  const btn =
-    document.getElementById('submitBtn');
-
-  btn.classList.add('loading');
-
-  document.getElementById(
-    'submitIcon'
-  ).textContent = '⏳';
-
-  document.getElementById(
-    'submitText'
-  ).textContent = 'جارٍ الإرسال...';
-
-  // إرسال إلى Supabase
-
- const { data,error } =
-await supabase
-.from('complaints')
-.insert([{
-
-full_name:
-isAnon ? "مجهول" : name,
-
-phone: phone,
-
-email: email,
-
-department: department,
-
-subject: subject,
-
-message: description,
-
-reference: reference,
-
-status:"قيد الدراسة"
-
-}]);
-
-console.log(data);
-console.log(error)
-    btn.classList.remove('loading');
-
-    document.getElementById(
-      'submitIcon'
-    ).textContent='📤';
-
-    document.getElementById(
-      'submitText'
-    ).textContent='إرسال البلاغ';
-
-    return;
-  }
-
-  // نجاح
-
-  document.getElementById(
-    'ticketNumber'
-  ).textContent = reference;
-
-  document.getElementById(
-    'successOverlay'
-  ).classList.add('show');
-
-  document.getElementById(
-    'formTitle'
-  ).style.display='none';
-
-  document.querySelectorAll(
-'.form-section-title,.form-group,.anon-toggle,.file-upload-area,.file-list,.btn-submit-complaint'
-  ).forEach(
-      el=>el.style.display='none'
-  );
-
-}
-
+ function submitComplaint() {
+      const isAnon = document.getElementById('anonymousCheck').checked;
+      const name = document.getElementById('fullName').value.trim();
+      const dept = document.getElementById('department').value;
+      const subject = document.getElementById('subject').value.trim();
+      const desc = document.getElementById('description').value.trim();
+ 
+      if (!isAnon && !name) { alert('يرجى إدخال اسمك الكامل أو تفعيل خيار الإخفاء.'); return; }
+      if (!dept) { alert('يرجى اختيار المصلحة المعنية.'); return; }
+      if (!subject) { alert('يرجى إدخال موضوع البلاغ.'); return; }
+      if (!desc) { alert('يرجى كتابة وصف تفصيلي للمشكلة.'); return; }
+ 
+      // Simulate loading
+      const btn = document.getElementById('submitBtn');
+      btn.classList.add('loading');
+      document.getElementById('submitIcon').textContent = '⏳';
+      document.getElementById('submitText').textContent = 'جارٍ الإرسال...';
+ 
+      setTimeout(() => {
+        // Generate ticket number
+        const ticketNum = 'SIG-2026-' + Math.floor(1000 + Math.random() * 9000);
+        document.getElementById('ticketNumber').textContent = ticketNum;
+ 
+        // Show success
+        document.getElementById('successOverlay').classList.add('show');
+ 
+        // Hide form elements
+        document.getElementById('formTitle').style.display = 'none';
+        document.querySelectorAll('.form-section-title, .form-group, .anon-toggle, .file-upload-area, .file-list, .btn-submit-complaint').forEach(el => el.style.display = 'none');
+      }, 1400);
+    }
+ 
+    function resetForm() {
+      document.getElementById('successOverlay').classList.remove('show');
+      document.getElementById('formTitle').style.display = '';
+      document.querySelectorAll('.form-section-title, .form-group, .anon-toggle, .file-upload-area, .btn-submit-complaint').forEach(el => el.style.display = '');
+      document.getElementById('identityFields').style.display = '';
+      document.getElementById('anonymousCheck').checked = false;
+ 
+      // Reset fields
+      ['fullName','phone','email','department','priority','subject','location','description'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = id === 'priority' ? 'normal' : '';
+      });
+ 
+      attachedFiles = [];
+      renderFileList();
+ 
+      const btn = document.getElementById('submitBtn');
+      btn.classList.remove('loading');
+      document.getElementById('submitIcon').textContent = '📤';
+      document.getElementById('submitText').textContent = 'إرسال البلاغ';
+    }
+ 
     // ── TRACKER ──────────────────────────────────
-  async function trackComplaint() {
-
-  const reference =
-  document.getElementById(
-    'trackInput'
-  ).value.trim();
-
-  if(!reference){
-
-    alert(
-      "يرجى إدخال رقم التتبع"
-    );
-
-    return;
-  }
-
-  const {data,error} =
-  await supabase
-  .from('complaints')
-  .select('*')
-  .eq(
-    'reference',
-    reference
-  )
-  .single();
-
-
-  if(error || !data){
-
-    alert(
-      "لم يتم العثور على الشكوى"
-    );
-
-    return;
-  }
-
-  document.getElementById(
-    'trackerResult'
-  ).classList.add('show');
-
-  document.getElementById(
-    'statusText'
-  ).textContent =
-  data.status;
-
-  document.getElementById(
-    'subjectText'
-  ).textContent =
-  data.subject;
-
-  document.getElementById(
-    'departmentText'
-  ).textContent =
-  data.department;
-
-}
-async function trackComplaint() {
-
-  const reference =
-  document.getElementById(
-    'trackInput'
-  ).value.trim();
-
-  if(!reference){
-
-    alert(
-      "يرجى إدخال رقم التتبع"
-    );
-
-    return;
-  }
-
-  const {data,error} =
-  await supabase
-  .from('complaints')
-  .select('*')
-  .eq(
-    'reference',
-    reference
-  )
-  .single();
-
-
-  if(error || !data){
-
-    alert(
-      "لم يتم العثور على الشكوى"
-    );
-
-    return;
-  }
-
-  document.getElementById(
-    'trackerResult'
-  ).classList.add('show');
-
-  document.getElementById(
-    'statusText'
-  ).textContent =
-  data.status;
-
-  document.getElementById(
-    'subjectText'
-  ).textContent =
-  data.subject;
-
-  document.getElementById(
-    'departmentText'
-  ).textContent =
-  data.department;
-
-}
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-
-const SUPABASE_URL =
-"https://ezjeiwjcnarixxupnzcl.supabase.co";
-
-const SUPABASE_KEY =
-"ضع هنا Publishable Key";
-
-const supabase =
-window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-</script>
+    function trackComplaint() {
+      const val = document.getElementById('trackInput').value.trim();
+      if (!val) { alert('يرجى إدخال رقم المرجع.'); return; }
+      document.getElementById('trackerResult').classList.add('show');
+    }
+ 
+    // ── FADE IN ANIMATION ──────────────────────────────────
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
   </script>
   </body>
 </html>
