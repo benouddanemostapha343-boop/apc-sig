@@ -15,44 +15,46 @@ document.addEventListener("DOMContentLoaded", () => {
       const nav     = document.getElementById("main-nav");
       const overlay = document.getElementById("menuOverlay");
 
+      let savedScrollY = 0;
+
       function openMenu() {
+        savedScrollY = window.scrollY;
         nav.classList.add("active");
         overlay.classList.add("active");
-        // تجميد الصفحة بالكامل — body + html
-        document.body.style.overflow    = "hidden";
-        document.body.style.position    = "fixed";
-        document.body.style.width       = "100%";
-        document.documentElement.style.overflow = "hidden";
+        // تجميد بدون إزاحة: نثبّت body في موضعه الحالي
+        document.body.style.overflow = "hidden";
+        document.body.style.position = "fixed";
+        document.body.style.top      = `-${savedScrollY}px`;
+        document.body.style.left     = "0";
+        document.body.style.right    = "0";
       }
 
       function closeMenu() {
         nav.classList.remove("active");
         overlay.classList.remove("active");
-        // تحرير الصفحة
-        document.body.style.overflow    = "";
-        document.body.style.position    = "";
-        document.body.style.width       = "";
-        document.documentElement.style.overflow = "";
+        // تحرير الصفحة واسترجاع موضع التمرير بدون قفز
+        document.body.style.overflow = "";
+        document.body.style.position = "";
+        document.body.style.top      = "";
+        document.body.style.left     = "";
+        document.body.style.right    = "";
+        window.scrollTo(0, savedScrollY);
       }
 
       toggle.addEventListener("click", () => {
         nav.classList.contains("active") ? closeMenu() : openMenu();
       });
 
-      // إغلاق عند الضغط على الـ overlay
       overlay.addEventListener("click", closeMenu);
 
-      // إغلاق عند الضغط على أي رابط داخل القائمة
       nav.querySelectorAll("a").forEach(link => {
         link.addEventListener("click", closeMenu);
       });
 
-      // إغلاق عند الضغط على Escape
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeMenu();
       });
 
-      // إغلاق تلقائي إذا اتسعت الشاشة (تدوير الجهاز)
       window.addEventListener("resize", () => {
         if (window.innerWidth >= 768) closeMenu();
       });
