@@ -1094,38 +1094,32 @@
 
   // إرسال إلى Supabase
 
-  const { error } =
-    await supabase
-    .from('complaints')
-    .insert([{
+ const { data,error } =
+await supabase
+.from('complaints')
+.insert([{
 
-      full_name:
-        isAnon ? "مجهول" : name,
+full_name:
+isAnon ? "مجهول" : name,
 
-      phone: phone,
+phone: phone,
 
-      email: email,
+email: email,
 
-      department: department,
+department: department,
 
-      subject: subject,
+subject: subject,
 
-      message: description,
+message: description,
 
-      reference: reference,
+reference: reference,
 
-      status: "قيد الدراسة"
+status:"قيد الدراسة"
 
-    }]);
+}]);
 
-  if(error){
-
-    console.log(error);
-
-    alert(
-      'حدث خطأ أثناء الإرسال'
-    );
-
+console.log(data);
+console.log(error)
     btn.classList.remove('loading');
 
     document.getElementById(
@@ -1274,7 +1268,23 @@ async function trackComplaint() {
   data.department;
 
 }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+
+const SUPABASE_URL =
+"https://ezjeiwjcnarixxupnzcl.supabase.co";
+
+const SUPABASE_KEY =
+"ضع هنا Publishable Key";
+
+const supabase =
+window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+</script>
   </script>
   </body>
 </html>
