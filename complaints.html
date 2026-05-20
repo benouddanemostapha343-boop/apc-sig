@@ -1019,59 +1019,147 @@
     });
 
     // ── SUBMIT ──────────────────────────────────
-    function submitComplaint() {
-      const isAnon = document.getElementById('anonymousCheck').checked;
-      const name = document.getElementById('fullName').value.trim();
-      const dept = document.getElementById('department').value;
-      const subject = document.getElementById('subject').value.trim();
-      const desc = document.getElementById('description').value.trim();
+    async function submitComplaint() {
 
-      if (!isAnon && !name) { alert('يرجى إدخال اسمك الكامل أو تفعيل خيار الإخفاء.'); return; }
-      if (!dept) { alert('يرجى اختيار المصلحة المعنية.'); return; }
-      if (!subject) { alert('يرجى إدخال موضوع البلاغ.'); return; }
-      if (!desc) { alert('يرجى كتابة وصف تفصيلي للمشكلة.'); return; }
+  const isAnon =
+    document.getElementById('anonymousCheck').checked;
 
-      // Simulate loading
-      const btn = document.getElementById('submitBtn');
-      btn.classList.add('loading');
-      document.getElementById('submitIcon').textContent = '⏳';
-      document.getElementById('submitText').textContent = 'جارٍ الإرسال...';
+  const name =
+    document.getElementById('fullName').value.trim();
 
-      setTimeout(() => {
-        // Generate ticket number
-        const ticketNum = 'SIG-2026-' + Math.floor(1000 + Math.random() * 9000);
-        document.getElementById('ticketNumber').textContent = ticketNum;
+  const phone =
+    document.getElementById('phone').value.trim();
 
-        // Show success
-        document.getElementById('successOverlay').classList.add('show');
+  const email =
+    document.getElementById('email').value.trim();
 
-        // Hide form elements
-        document.getElementById('formTitle').style.display = 'none';
-        document.querySelectorAll('.form-section-title, .form-group, .anon-toggle, .file-upload-area, .file-list, .btn-submit-complaint').forEach(el => el.style.display = 'none');
-      }, 1400);
-    }
+  const department =
+    document.getElementById('department').value;
 
-    function resetForm() {
-      document.getElementById('successOverlay').classList.remove('show');
-      document.getElementById('formTitle').style.display = '';
-      document.querySelectorAll('.form-section-title, .form-group, .anon-toggle, .file-upload-area, .btn-submit-complaint').forEach(el => el.style.display = '');
-      document.getElementById('identityFields').style.display = '';
-      document.getElementById('anonymousCheck').checked = false;
+  const subject =
+    document.getElementById('subject').value.trim();
 
-      // Reset fields
-      ['fullName','phone','email','department','priority','subject','location','description'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = id === 'priority' ? 'normal' : '';
-      });
+  const description =
+    document.getElementById('description').value.trim();
 
-      attachedFiles = [];
-      renderFileList();
+  // التحقق من الحقول
 
-      const btn = document.getElementById('submitBtn');
-      btn.classList.remove('loading');
-      document.getElementById('submitIcon').textContent = '📤';
-      document.getElementById('submitText').textContent = 'إرسال البلاغ';
-    }
+  if (!isAnon && !name) {
+    alert(
+      'يرجى إدخال اسمك أو اختيار الإرسال المجهول'
+    );
+    return;
+  }
+
+  if (!department) {
+    alert(
+      'يرجى اختيار المصلحة المعنية'
+    );
+    return;
+  }
+
+  if (!subject) {
+    alert(
+      'يرجى إدخال الموضوع'
+    );
+    return;
+  }
+
+  if (!description) {
+    alert(
+      'يرجى كتابة وصف البلاغ'
+    );
+    return;
+  }
+
+  // رقم مرجعي
+
+  const reference =
+    "SIG-" + Date.now();
+
+  // زر التحميل
+
+  const btn =
+    document.getElementById('submitBtn');
+
+  btn.classList.add('loading');
+
+  document.getElementById(
+    'submitIcon'
+  ).textContent = '⏳';
+
+  document.getElementById(
+    'submitText'
+  ).textContent = 'جارٍ الإرسال...';
+
+  // إرسال إلى Supabase
+
+  const { error } =
+    await supabase
+    .from('complaints')
+    .insert([{
+
+      full_name:
+        isAnon ? "مجهول" : name,
+
+      phone: phone,
+
+      email: email,
+
+      department: department,
+
+      subject: subject,
+
+      message: description,
+
+      reference: reference,
+
+      status: "قيد الدراسة"
+
+    }]);
+
+  if(error){
+
+    console.log(error);
+
+    alert(
+      'حدث خطأ أثناء الإرسال'
+    );
+
+    btn.classList.remove('loading');
+
+    document.getElementById(
+      'submitIcon'
+    ).textContent='📤';
+
+    document.getElementById(
+      'submitText'
+    ).textContent='إرسال البلاغ';
+
+    return;
+  }
+
+  // نجاح
+
+  document.getElementById(
+    'ticketNumber'
+  ).textContent = reference;
+
+  document.getElementById(
+    'successOverlay'
+  ).classList.add('show');
+
+  document.getElementById(
+    'formTitle'
+  ).style.display='none';
+
+  document.querySelectorAll(
+'.form-section-title,.form-group,.anon-toggle,.file-upload-area,.file-list,.btn-submit-complaint'
+  ).forEach(
+      el=>el.style.display='none'
+  );
+
+}
 
     // ── TRACKER ──────────────────────────────────
     function trackComplaint() {
