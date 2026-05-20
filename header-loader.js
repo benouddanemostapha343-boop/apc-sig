@@ -11,21 +11,50 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((html) => {
       headerPlaceholder.innerHTML = html;
 
-      // Mobile menu
       const toggle  = document.getElementById("menuToggle");
       const nav     = document.getElementById("main-nav");
       const overlay = document.getElementById("menuOverlay");
 
-      toggle.addEventListener("click", () => {
-        nav.classList.toggle("active");
-        overlay.classList.toggle("active");
-        document.body.style.overflow = nav.classList.contains("active") ? "hidden" : "";
-      });
+      function openMenu() {
+        nav.classList.add("active");
+        overlay.classList.add("active");
+        // تجميد الصفحة بالكامل — body + html
+        document.body.style.overflow    = "hidden";
+        document.body.style.position    = "fixed";
+        document.body.style.width       = "100%";
+        document.documentElement.style.overflow = "hidden";
+      }
 
-      overlay.addEventListener("click", () => {
+      function closeMenu() {
         nav.classList.remove("active");
         overlay.classList.remove("active");
-        document.body.style.overflow = "";
+        // تحرير الصفحة
+        document.body.style.overflow    = "";
+        document.body.style.position    = "";
+        document.body.style.width       = "";
+        document.documentElement.style.overflow = "";
+      }
+
+      toggle.addEventListener("click", () => {
+        nav.classList.contains("active") ? closeMenu() : openMenu();
+      });
+
+      // إغلاق عند الضغط على الـ overlay
+      overlay.addEventListener("click", closeMenu);
+
+      // إغلاق عند الضغط على أي رابط داخل القائمة
+      nav.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", closeMenu);
+      });
+
+      // إغلاق عند الضغط على Escape
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeMenu();
+      });
+
+      // إغلاق تلقائي إذا اتسعت الشاشة (تدوير الجهاز)
+      window.addEventListener("resize", () => {
+        if (window.innerWidth >= 768) closeMenu();
       });
 
       // التاريخ
@@ -49,24 +78,24 @@ function setActiveNavLink() {
     "property.html", "social.html", "civil.html"
   ];
 
-  // إزالة active السابق
   document.querySelectorAll(".main-nav .active").forEach(el => el.classList.remove("active"));
 
-  // رابط مباشر
   const currentLink = document.querySelector(`.main-nav a[href="${currentPage}"]`);
   if (currentLink) {
     currentLink.classList.add("active");
     return;
   }
 
-  // صفحات المصالح → تفعيل زر الـ dropdown
   if (departmentPages.includes(currentPage)) {
     document.querySelector(".dropbtn")?.classList.add("active");
     return;
   }
 
-  // صفحة تتبع الطلبات
   if (currentPage === "track.html") {
     document.querySelector('.main-nav a[href="track.html"]')?.classList.add("active");
+  }
+
+  if (currentPage === "complaints.html") {
+    document.querySelector('.main-nav a[href="complaints.html"]')?.classList.add("active");
   }
 }
