@@ -1162,21 +1162,119 @@
 }
 
     // ── TRACKER ──────────────────────────────────
-    function trackComplaint() {
-      const val = document.getElementById('trackInput').value.trim();
-      if (!val) { alert('يرجى إدخال رقم المرجع.'); return; }
-      document.getElementById('trackerResult').classList.add('show');
-    }
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    // ── FADE IN ANIMATION ──────────────────────────────────
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-    const supabaseUrl =
-"https://ezjeiwjcnarixxupnzcl.supabase.co";
-const supabaseKey =
-"sb_publishable_ayrn1fghfdSJdNDq6XwKqA_13JIcXkn";
+  async function trackComplaint() {
+
+  const reference =
+  document.getElementById(
+    'trackInput'
+  ).value.trim();
+
+  if(!reference){
+
+    alert(
+      "يرجى إدخال رقم التتبع"
+    );
+
+    return;
+  }
+
+  const {data,error} =
+  await supabase
+  .from('complaints')
+  .select('*')
+  .eq(
+    'reference',
+    reference
+  )
+  .single();
+
+
+  if(error || !data){
+
+    alert(
+      "لم يتم العثور على الشكوى"
+    );
+
+    return;
+  }
+
+  document.getElementById(
+    'trackerResult'
+  ).classList.add('show');
+
+  document.getElementById(
+    'statusText'
+  ).textContent =
+  data.status;
+
+  document.getElementById(
+    'subjectText'
+  ).textContent =
+  data.subject;
+
+  document.getElementById(
+    'departmentText'
+  ).textContent =
+  data.department;
+
+}
+async function trackComplaint() {
+
+  const reference =
+  document.getElementById(
+    'trackInput'
+  ).value.trim();
+
+  if(!reference){
+
+    alert(
+      "يرجى إدخال رقم التتبع"
+    );
+
+    return;
+  }
+
+  const {data,error} =
+  await supabase
+  .from('complaints')
+  .select('*')
+  .eq(
+    'reference',
+    reference
+  )
+  .single();
+
+
+  if(error || !data){
+
+    alert(
+      "لم يتم العثور على الشكوى"
+    );
+
+    return;
+  }
+
+  document.getElementById(
+    'trackerResult'
+  ).classList.add('show');
+
+  document.getElementById(
+    'statusText'
+  ).textContent =
+  data.status;
+
+  document.getElementById(
+    'subjectText'
+  ).textContent =
+  data.subject;
+
+  document.getElementById(
+    'departmentText'
+  ).textContent =
+  data.department;
+
+}
+
   </script>
   </body>
 </html>
