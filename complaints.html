@@ -960,7 +960,9 @@
           "Content-Type": "application/json",
           "apikey": SUPABASE_KEY,
           "Authorization": `Bearer ${SUPABASE_KEY}`,
-          "Prefer": "return=representation"
+          "Prefer": "return=representation",
+          "Content-Profile": "public",
+          "Accept-Profile": "public"
         },
         body: JSON.stringify(data)
       });
