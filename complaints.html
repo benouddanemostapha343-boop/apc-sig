@@ -949,33 +949,67 @@
 
   <script src="header-loader.js"></script>
   <script>
+    // ── SUPABASE CONFIG ──────────────────────────────────
+    const SUPABASE_URL  = "https://ezjeiwjcnarixxupnzcl.supabase.co";
+    const SUPABASE_KEY  = "sb_publishable_ayrn1fghfdSJdNDq6XwKqA_13JIcXkn";
+
+    async function supabaseInsert(data) {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/complaints`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_KEY,
+          "Authorization": `Bearer ${SUPABASE_KEY}`,
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Supabase error");
+      }
+      return res.json();
+    }
+
+    async function supabaseFetch(reference) {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/complaints?reference=eq.${encodeURIComponent(reference)}&select=*`,
+        {
+          headers: {
+            "apikey": SUPABASE_KEY,
+            "Authorization": `Bearer ${SUPABASE_KEY}`
+          }
+        }
+      );
+      if (!res.ok) throw new Error("fetch error");
+      return res.json();
+    }
+
     // ── TYPE SELECTION ──────────────────────────────────
-    const typeCards = document.querySelectorAll('.type-card');
-    const formTitle = document.getElementById('formTitle');
+    const typeCards = document.querySelectorAll(".type-card");
+    const formTitle = document.getElementById("formTitle");
 
     const typeConfig = {
-      complaint: { title: '⚠️ تقديم شكوى رسمية', selectedClass: 'selected' },
-      suggestion: { title: '💡 تقديم اقتراح', selectedClass: 'selected-suggestion' },
-      compliment: { title: '🌟 تقديم إشادة', selectedClass: 'selected-compliment' }
+      complaint:  { title: "⚠️ تقديم شكوى رسمية",  selectedClass: "selected" },
+      suggestion: { title: "💡 تقديم اقتراح",        selectedClass: "selected-suggestion" },
+      compliment: { title: "🌟 تقديم إشادة",          selectedClass: "selected-compliment" }
     };
 
     typeCards.forEach(card => {
-      card.addEventListener('click', () => {
-        typeCards.forEach(c => c.classList.remove('selected', 'selected-suggestion', 'selected-compliment'));
+      card.addEventListener("click", () => {
+        typeCards.forEach(c => c.classList.remove("selected","selected-suggestion","selected-compliment"));
         const type = card.dataset.type;
         card.classList.add(typeConfig[type].selectedClass);
         formTitle.textContent = typeConfig[type].title;
-        card.querySelector('input[type="radio"]').checked = true;
+        card.querySelector("input[type=radio]").checked = true;
       });
     });
 
     // ── ANONYMOUS TOGGLE ──────────────────────────────────
     function toggleAnonymous(checkbox) {
-      const fields = document.getElementById('identityFields');
-      fields.style.display = checkbox.checked ? 'none' : 'block';
-      if (checkbox.checked) {
-        fields.querySelectorAll('input').forEach(i => i.value = '');
-      }
+      const fields = document.getElementById("identityFields");
+      fields.style.display = checkbox.checked ? "none" : "block";
+      if (checkbox.checked) fields.querySelectorAll("input").forEach(i => i.value = "");
     }
 
     // ── FILE HANDLING ──────────────────────────────────
@@ -984,23 +1018,21 @@
     function handleFiles(files) {
       for (const file of files) {
         if (attachedFiles.length >= 5) break;
-        if (!attachedFiles.find(f => f.name === file.name)) {
-          attachedFiles.push(file);
-        }
+        if (!attachedFiles.find(f => f.name === file.name)) attachedFiles.push(file);
       }
       renderFileList();
     }
 
     function renderFileList() {
-      const list = document.getElementById('fileList');
+      const list = document.getElementById("fileList");
       list.innerHTML = attachedFiles.map((file, i) => `
         <div class="file-item">
-          <span>${file.type.startsWith('image/') ? '🖼️' : '📄'}</span>
+          <span>${file.type.startsWith("image/") ? "🖼️" : "📄"}</span>
           <span class="file-name">${file.name}</span>
-          <span style="color:var(--muted);font-size:11px;">${(file.size / 1024).toFixed(0)} KB</span>
+          <span style="color:var(--muted);font-size:11px;">${(file.size/1024).toFixed(0)} KB</span>
           <button onclick="removeFile(${i})">✕</button>
         </div>
-      `).join('');
+      `).join("");
     }
 
     function removeFile(index) {
@@ -1008,83 +1040,165 @@
       renderFileList();
     }
 
-    // Drag & drop
-    const dropZone = document.getElementById('dropZone');
-    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
-    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-    dropZone.addEventListener('drop', e => {
+    const dropZone = document.getElementById("dropZone");
+    dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.classList.add("dragover"); });
+    dropZone.addEventListener("dragleave", () => dropZone.classList.remove("dragover"));
+    dropZone.addEventListener("drop", e => {
       e.preventDefault();
-      dropZone.classList.remove('dragover');
+      dropZone.classList.remove("dragover");
       handleFiles(e.dataTransfer.files);
     });
 
-    // ── SUBMIT ──────────────────────────────────
- function submitComplaint() {
-      const isAnon = document.getElementById('anonymousCheck').checked;
-      const name = document.getElementById('fullName').value.trim();
-      const dept = document.getElementById('department').value;
-      const subject = document.getElementById('subject').value.trim();
-      const desc = document.getElementById('description').value.trim();
- 
-      if (!isAnon && !name) { alert('يرجى إدخال اسمك الكامل أو تفعيل خيار الإخفاء.'); return; }
-      if (!dept) { alert('يرجى اختيار المصلحة المعنية.'); return; }
-      if (!subject) { alert('يرجى إدخال موضوع البلاغ.'); return; }
-      if (!desc) { alert('يرجى كتابة وصف تفصيلي للمشكلة.'); return; }
- 
-      // Simulate loading
-      const btn = document.getElementById('submitBtn');
-      btn.classList.add('loading');
-      document.getElementById('submitIcon').textContent = '⏳';
-      document.getElementById('submitText').textContent = 'جارٍ الإرسال...';
- 
-      setTimeout(() => {
-        // Generate ticket number
-        const ticketNum = 'SIG-2026-' + Math.floor(1000 + Math.random() * 9000);
-        document.getElementById('ticketNumber').textContent = ticketNum;
- 
-        // Show success
-        document.getElementById('successOverlay').classList.add('show');
- 
-        // Hide form elements
-        document.getElementById('formTitle').style.display = 'none';
-        document.querySelectorAll('.form-section-title, .form-group, .anon-toggle, .file-upload-area, .file-list, .btn-submit-complaint').forEach(el => el.style.display = 'none');
-      }, 1400);
+    // ── SUBMIT → SUPABASE ──────────────────────────────────
+    async function submitComplaint() {
+      const isAnon = document.getElementById("anonymousCheck").checked;
+      const name   = document.getElementById("fullName").value.trim();
+      const phone  = document.getElementById("phone").value.trim();
+      const email  = document.getElementById("email").value.trim();
+      const dept   = document.getElementById("department").value;
+      const subj   = document.getElementById("subject").value.trim();
+      const desc   = document.getElementById("description").value.trim();
+      const type   = document.querySelector(".type-card.selected, .type-card.selected-suggestion, .type-card.selected-compliment")?.dataset.type || "complaint";
+
+      if (!isAnon && !name) { alert("يرجى إدخال اسمك الكامل أو تفعيل خيار الإخفاء."); return; }
+      if (!dept)             { alert("يرجى اختيار المصلحة المعنية."); return; }
+      if (!subj)             { alert("يرجى إدخال موضوع البلاغ."); return; }
+      if (!desc)             { alert("يرجى كتابة وصف تفصيلي للمشكلة."); return; }
+
+      // زر التحميل
+      const btn = document.getElementById("submitBtn");
+      btn.classList.add("loading");
+      document.getElementById("submitIcon").textContent = "⏳";
+      document.getElementById("submitText").textContent = "جارٍ الإرسال...";
+
+      // رقم مرجعي فريد
+      const reference = "SIG-" + new Date().getFullYear() + "-" + Math.floor(1000 + Math.random() * 9000);
+
+      const payload = {
+        full_name:  isAnon ? "مجهول الهوية" : name,
+        email:      email  || null,
+        phone:      phone  || null,
+        department: dept,
+        subject:    `[${type}] ${subj}`,
+        message:    desc,
+        reference:  reference,
+        status:     "pending"
+      };
+
+      try {
+        await supabaseInsert(payload);
+
+        // نجاح
+        document.getElementById("ticketNumber").textContent = reference;
+        document.getElementById("successOverlay").classList.add("show");
+        document.getElementById("formTitle").style.display = "none";
+        document.querySelectorAll(".form-section-title, .form-group, .anon-toggle, .file-upload-area, .file-list, .btn-submit-complaint")
+          .forEach(el => el.style.display = "none");
+
+      } catch (err) {
+        console.error(err);
+        alert("حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى.");
+        btn.classList.remove("loading");
+        document.getElementById("submitIcon").textContent = "📤";
+        document.getElementById("submitText").textContent = "إرسال البلاغ";
+      }
     }
- 
+
     function resetForm() {
-      document.getElementById('successOverlay').classList.remove('show');
-      document.getElementById('formTitle').style.display = '';
-      document.querySelectorAll('.form-section-title, .form-group, .anon-toggle, .file-upload-area, .btn-submit-complaint').forEach(el => el.style.display = '');
-      document.getElementById('identityFields').style.display = '';
-      document.getElementById('anonymousCheck').checked = false;
- 
-      // Reset fields
-      ['fullName','phone','email','department','priority','subject','location','description'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = id === 'priority' ? 'normal' : '';
-      });
- 
+      document.getElementById("successOverlay").classList.remove("show");
+      document.getElementById("formTitle").style.display = "";
+      document.querySelectorAll(".form-section-title, .form-group, .anon-toggle, .file-upload-area, .btn-submit-complaint")
+        .forEach(el => el.style.display = "");
+      document.getElementById("identityFields").style.display = "";
+      document.getElementById("anonymousCheck").checked = false;
+
+      ["fullName","phone","email","department","priority","subject","location","description"]
+        .forEach(id => { const el = document.getElementById(id); if (el) el.value = id === "priority" ? "normal" : ""; });
+
       attachedFiles = [];
       renderFileList();
- 
-      const btn = document.getElementById('submitBtn');
-      btn.classList.remove('loading');
-      document.getElementById('submitIcon').textContent = '📤';
-      document.getElementById('submitText').textContent = 'إرسال البلاغ';
+
+      const btn = document.getElementById("submitBtn");
+      btn.classList.remove("loading");
+      document.getElementById("submitIcon").textContent = "📤";
+      document.getElementById("submitText").textContent = "إرسال البلاغ";
     }
- 
-    // ── TRACKER ──────────────────────────────────
-    function trackComplaint() {
-      const val = document.getElementById('trackInput').value.trim();
-      if (!val) { alert('يرجى إدخال رقم المرجع.'); return; }
-      document.getElementById('trackerResult').classList.add('show');
+
+    // ── TRACKER → SUPABASE ──────────────────────────────────
+    const statusLabels = {
+      pending:    { text: "⏳ في الانتظار",     cls: "status-pending" },
+      processing: { text: "⚙️ قيد المعالجة",   cls: "status-processing" },
+      resolved:   { text: "✅ تم الحل",          cls: "status-resolved" },
+      closed:     { text: "🔒 مغلق",             cls: "status-closed" }
+    };
+
+    const stepOrder = ["pending","processing","resolved"];
+
+    async function trackComplaint() {
+      const val = document.getElementById("trackInput").value.trim();
+      if (!val) { alert("يرجى إدخال رقم المرجع."); return; }
+
+      const btn = document.querySelector(".tracker-input-row button");
+      btn.textContent = "...";
+      btn.disabled = true;
+
+      try {
+        const rows = await supabaseFetch(val);
+
+        if (!rows.length) {
+          alert("لم يُعثر على أي بلاغ بهذا الرقم المرجعي.");
+          return;
+        }
+
+        const row = rows[0];
+        const status = row.status || "pending";
+        const label  = statusLabels[status] || statusLabels.pending;
+        const currentStep = stepOrder.indexOf(status);
+
+        const stepNames = [
+          { label: "استُلم البلاغ",    date: row.created_at ? new Date(row.created_at).toLocaleDateString("ar-DZ") : "—" },
+          { label: "قيد المراجعة",     date: status !== "pending" ? "—" : null },
+          { label: "معالجة ميدانية",   date: status === "resolved" || status === "closed" ? "—" : null },
+          { label: "تم الحل",          date: status === "resolved" || status === "closed" ? "—" : null }
+        ];
+
+        const stepsHTML = stepNames.map((step, i) => {
+          const done    = i < currentStep + 1;
+          const current = i === currentStep;
+          return `
+            <div class="tracker-step ${done ? "done" : ""} ${current ? "current" : ""}">
+              <div class="step-dot">${done ? "✓" : (current ? "⚙" : "")}</div>
+              <div class="step-info">
+                <strong>${step.label}</strong>
+                <span>${step.date || "—"}</span>
+              </div>
+            </div>`;
+        }).join("");
+
+        document.getElementById("trackerResult").innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+            <strong style="font-size:13px;color:var(--primary-dark);">${row.subject || val}</strong>
+            <span class="status-badge ${label.cls}">${label.text}</span>
+          </div>
+          <div class="tracker-steps">${stepsHTML}</div>
+        `;
+        document.getElementById("trackerResult").classList.add("show");
+
+      } catch (err) {
+        console.error(err);
+        alert("حدث خطأ في البحث. يرجى المحاولة مرة أخرى.");
+      } finally {
+        btn.textContent = "بحث";
+        btn.disabled = false;
+      }
     }
- 
-    // ── FADE IN ANIMATION ──────────────────────────────────
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // ── FADE IN ──────────────────────────────────
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("show"); }),
+      { threshold: 0.1 }
+    );
+    document.querySelectorAll(".fade-in").forEach(el => observer.observe(el));
   </script>
-  </body>
+</body>
 </html>
