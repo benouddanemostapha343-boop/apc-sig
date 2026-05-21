@@ -685,6 +685,38 @@
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: var(--surface); }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ══════════ COMPLAINTS ══════════ */
+    .c-status {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 11px; border-radius: 999px; font-size: 11.5px; font-weight: 700;
+    }
+    .c-pending    { background: rgba(251,191,36,0.12); color: #fbbf24; }
+    .c-processing { background: rgba(59,130,246,0.12); color: #93c5fd; }
+    .c-resolved   { background: rgba(34,197,94,0.12);  color: #4ade80; }
+    .c-closed     { background: rgba(148,163,184,0.12);color: #94a3b8; }
+
+    .status-select {
+      padding: 5px 10px; border-radius: 7px;
+      border: 1px solid var(--border); background: var(--surface2);
+      color: var(--text); font-family: var(--font); font-size: 12.5px;
+      outline: none; cursor: pointer; transition: border-color var(--fast);
+    }
+    .status-select:focus { border-color: var(--primary-l); }
+
+    .complaint-detail { font-size: 12px; color: var(--muted); margin-top: 3px; max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .refresh-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--surface2); color: var(--muted); font-family: var(--font);
+      font-size: 13px; font-weight: 700; cursor: pointer; transition: all var(--fast);
+    }
+    .refresh-btn:hover { background: var(--border); color: var(--text); }
+    .refresh-btn.spinning { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .complaints-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 28px; }
   </style>
 </head>
 <body>
@@ -710,7 +742,7 @@
     <button class="login-btn" onclick="doLogin()">🔐 تسجيل الدخول</button>
 
     <div class="login-hint">
-      للتجربة: <strong>admin</strong> / <strong>sig2026</strong>
+      للتجربة: <strong>admin</strong> / <strong>apcsig2026</strong>
     </div>
   </div>
 </div>
@@ -732,6 +764,9 @@
       <div class="nav-section-label">القائمة الرئيسية</div>
       <button class="nav-btn active" onclick="showPanel('dashboard', this)">
         <span class="nav-icon">📊</span> لوحة التحكم
+      </button>
+      <button class="nav-btn" onclick="showPanel('complaints', this)">
+        <span class="nav-icon">📣</span> الشكاوى
       </button>
       <button class="nav-btn" onclick="showPanel('news', this)">
         <span class="nav-icon">📰</span> إدارة الأخبار
@@ -879,6 +914,93 @@
         </div>
       </div>
 
+
+      <!-- ══ COMPLAINTS PANEL ══ -->
+      <div class="panel" id="panel-complaints">
+
+        <div class="complaints-stats">
+          <div class="stat-card">
+            <div class="stat-icon blue">📣</div>
+            <div><div class="stat-num" id="cStatTotal">—</div><div class="stat-lbl">مجموع الشكاوى</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon gold">⏳</div>
+            <div><div class="stat-num" id="cStatPending">—</div><div class="stat-lbl">في الانتظار</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue">⚙️</div>
+            <div><div class="stat-num" id="cStatProcessing">—</div><div class="stat-lbl">قيد المعالجة</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">✅</div>
+            <div><div class="stat-num" id="cStatResolved">—</div><div class="stat-lbl">تم الحل</div></div>
+          </div>
+        </div>
+
+        <div class="section-hd">
+          <div>
+            <h2>إدارة الشكاوى</h2>
+            <p>عرض وتغيير حالة الشكاوى الواردة من المواطنين</p>
+          </div>
+          <button class="refresh-btn" id="refreshBtn" onclick="loadComplaints()">
+            <span id="refreshIcon">🔄</span> تحديث
+          </button>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-toolbar">
+            <div class="search-field">
+              <span>🔍</span>
+              <input type="text" placeholder="ابحث في الشكاوى..." oninput="filterComplaints(this.value)">
+            </div>
+            <select class="filter-select" onchange="filterComplaintsByStatus(this.value)">
+              <option value="">كل الحالات</option>
+              <option value="pending">⏳ في الانتظار</option>
+              <option value="processing">⚙️ قيد المعالجة</option>
+              <option value="resolved">✅ تم الحل</option>
+              <option value="closed">🔒 مغلق</option>
+            </select>
+            <select class="filter-select" onchange="filterComplaintsByDept(this.value)">
+              <option value="">كل المصالح</option>
+              <option>البناء والتعمير</option>
+              <option>الحالة المدنية</option>
+              <option>الشؤون الاجتماعية</option>
+              <option>أملاك البلدية</option>
+              <option>الاستثمار</option>
+              <option>النظافة والبيئة</option>
+              <option>الإنارة العمومية</option>
+              <option>الطرقات والتهيئة</option>
+              <option>أخرى</option>
+            </select>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>المُبلِّغ</th>
+                <th>الموضوع</th>
+                <th>المصلحة</th>
+                <th>الرقم المرجعي</th>
+                <th>التاريخ</th>
+                <th>الحالة</th>
+              </tr>
+            </thead>
+            <tbody id="complaintsTableBody"></tbody>
+          </table>
+
+          <div id="complaintsEmpty" class="empty-state" style="display:none;">
+            <div class="empty-icon">📭</div>
+            <h3>لا توجد شكاوى</h3>
+            <p>لم يتم استلام أي شكوى بعد.</p>
+          </div>
+
+          <div id="complaintsLoading" style="text-align:center;padding:48px;color:var(--muted);font-size:14px;">
+            ⏳ جارٍ تحميل الشكاوى...
+          </div>
+        </div>
+      </div>
+
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /appScreen -->
@@ -990,7 +1112,7 @@ function doLogin() {
   const p = document.getElementById('loginPass').value;
   const err = document.getElementById('loginError');
 
-  if (u === 'admin' && p === 'sig2026') {
+  if (u === 'admin' && p === 'apcsig2026') {
     err.style.display = 'none';
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('appScreen').classList.add('visible');
@@ -1029,7 +1151,7 @@ function showPanel(id, btn) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
 
-  const titles = { dashboard: 'لوحة التحكم', news: 'إدارة الأخبار' };
+  const titles = { dashboard: 'لوحة التحكم', news: 'إدارة الأخبار', complaints: 'إدارة الشكاوى' };
   document.getElementById('topbarTitle').textContent = titles[id] || '';
 }
 
@@ -1224,6 +1346,166 @@ function formatDate(d) {
     return new Date(d).toLocaleDateString('ar-DZ', { day:'numeric', month:'long', year:'numeric' });
   } catch { return d; }
 }
+
+
+/* ══════════════════════════════════════
+   SUPABASE — COMPLAINTS
+══════════════════════════════════════ */
+const SB_URL = "https://ezjeiwjcnarixxupnzcl.supabase.co";
+const SB_KEY = "sb_publishable_ayrn1fghfdSJdNDq6XwKqA_13JIcXkn";
+
+let allComplaints = [];
+let filteredComplaints = [];
+let _cSearch = '', _cStatus = '', _cDept = '';
+
+const C_STATUS = {
+  'pending':    { label: '⏳ في الانتظار',   cls: 'c-pending'    },
+  'processing': { label: '⚙️ قيد المعالجة', cls: 'c-processing' },
+  'resolved':   { label: '✅ تم الحل',        cls: 'c-resolved'   },
+  'closed':     { label: '🔒 مغلق',           cls: 'c-closed'     },
+  'قيد الدراسة':{ label: '⏳ قيد الدراسة',   cls: 'c-pending'    },
+};
+
+async function loadComplaints() {
+  document.getElementById('complaintsLoading').style.display = 'block';
+  document.getElementById('complaintsEmpty').style.display = 'none';
+  document.getElementById('complaintsTableBody').innerHTML = '';
+  const icon = document.getElementById('refreshIcon');
+  icon.style.display = 'inline-block';
+  icon.style.animation = 'spin 1s linear infinite';
+
+  try {
+    const res = await fetch(
+      `${SB_URL}/rest/v1/complaints?select=*&order=created_at.desc`,
+      { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+    );
+    if (!res.ok) throw new Error(await res.text());
+    allComplaints = await res.json();
+    filteredComplaints = [...allComplaints];
+    renderComplaintsTable();
+    updateComplaintsStats();
+  } catch(e) {
+    console.error(e);
+    toast('خطأ في تحميل الشكاوى: ' + e.message, 'error');
+  } finally {
+    document.getElementById('complaintsLoading').style.display = 'none';
+    icon.style.animation = '';
+  }
+}
+
+function renderComplaintsTable() {
+  const tbody = document.getElementById('complaintsTableBody');
+  const empty = document.getElementById('complaintsEmpty');
+
+  if (!filteredComplaints.length) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = filteredComplaints.map((c, i) => {
+    const st = C_STATUS[c.status] || { label: c.status || '—', cls: 'c-pending' };
+    const date = c.created_at
+      ? new Date(c.created_at).toLocaleDateString('ar-DZ', { day:'numeric', month:'short', year:'numeric' })
+      : '—';
+    return `<tr>
+      <td style="color:var(--muted);font-size:12px;">${String(i+1).padStart(2,'0')}</td>
+      <td>
+        <div style="font-weight:700;">${escHtml(c.full_name || 'مجهول')}</div>
+        <div class="complaint-detail">${escHtml(c.phone || c.email || '—')}</div>
+      </td>
+      <td>
+        <div style="font-weight:600;max-width:220px;">${escHtml(c.subject || '—')}</div>
+        <div class="complaint-detail">${escHtml((c.message||'').slice(0,60))}${(c.message||'').length>60?'…':''}</div>
+      </td>
+      <td style="font-size:13px;color:var(--muted);">${escHtml(c.department || '—')}</td>
+      <td style="font-size:12px;font-family:monospace;color:var(--accent);">${escHtml(c.reference || '—')}</td>
+      <td style="font-size:12px;color:var(--muted);">${date}</td>
+      <td>
+        <select class="status-select" onchange="updateComplaintStatus(${c.id}, this.value)" data-id="${c.id}">
+          <option value="pending"    ${c.status==='pending'    ?'selected':''}>⏳ في الانتظار</option>
+          <option value="processing" ${c.status==='processing' ?'selected':''}>⚙️ قيد المعالجة</option>
+          <option value="resolved"   ${c.status==='resolved'   ?'selected':''}>✅ تم الحل</option>
+          <option value="closed"     ${c.status==='closed'     ?'selected':''}>🔒 مغلق</option>
+        </select>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function updateComplaintStatus(id, newStatus) {
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/complaints?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: {
+        apikey: SB_KEY,
+        Authorization: `Bearer ${SB_KEY}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal'
+      },
+      body: JSON.stringify({ status: newStatus })
+    });
+    if (!res.ok) throw new Error(await res.text());
+
+    // تحديث محلي بدون reload كامل
+    const idx = allComplaints.findIndex(c => c.id === id);
+    if (idx !== -1) allComplaints[idx].status = newStatus;
+    const fidx = filteredComplaints.findIndex(c => c.id === id);
+    if (fidx !== -1) filteredComplaints[fidx].status = newStatus;
+
+    updateComplaintsStats();
+    toast('✅ تم تحديث الحالة', 'success');
+  } catch(e) {
+    toast('خطأ في التحديث: ' + e.message, 'error');
+    // إعادة تحميل للاسترداد
+    loadComplaints();
+  }
+}
+
+function updateComplaintsStats() {
+  document.getElementById('cStatTotal').textContent      = allComplaints.length;
+  document.getElementById('cStatPending').textContent    = allComplaints.filter(c => c.status === 'pending' || c.status === 'قيد الدراسة').length;
+  document.getElementById('cStatProcessing').textContent = allComplaints.filter(c => c.status === 'processing').length;
+  document.getElementById('cStatResolved').textContent   = allComplaints.filter(c => c.status === 'resolved').length;
+}
+
+function filterComplaints(val) {
+  _cSearch = val.toLowerCase();
+  applyComplaintsFilters();
+}
+
+function filterComplaintsByStatus(val) {
+  _cStatus = val;
+  applyComplaintsFilters();
+}
+
+function filterComplaintsByDept(val) {
+  _cDept = val;
+  applyComplaintsFilters();
+}
+
+function applyComplaintsFilters() {
+  filteredComplaints = allComplaints.filter(c => {
+    const matchSearch = !_cSearch ||
+      (c.full_name||'').toLowerCase().includes(_cSearch) ||
+      (c.subject||'').toLowerCase().includes(_cSearch) ||
+      (c.reference||'').toLowerCase().includes(_cSearch) ||
+      (c.message||'').toLowerCase().includes(_cSearch);
+    const matchStatus = !_cStatus || c.status === _cStatus;
+    const matchDept   = !_cDept   || c.department === _cDept;
+    return matchSearch && matchStatus && matchDept;
+  });
+  renderComplaintsTable();
+}
+
+/* تحميل الشكاوى عند فتح اللوحة */
+const _origShowPanel = showPanel;
+function showPanel(id, btn) {
+  _origShowPanel(id, btn);
+  if (id === 'complaints' && !allComplaints.length) loadComplaints();
+}
+
 </script>
 </body>
 </html>
