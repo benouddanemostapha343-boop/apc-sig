@@ -464,37 +464,7 @@
     </div>
 
     -- ══════ DEMO CARDS ══════ -->
-    <div class="demo-section">
-      <div style="margin-bottom:8px;">
-        <span style="display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:999px;background:var(--primary-soft);color:var(--primary);font-size:12.5px;font-weight:800;">🧪 للتجربة</span>
-      </div>
-      <h2 style="margin:8px 0 4px;font-size:22px;font-weight:800;color:var(--primary-dark);">أرقام تجريبية جاهزة</h2>
-      <p style="margin:0;color:var(--muted);font-size:14px;">انقر على أي بطاقة لاختبار النظام</p>
-
-      <div class="demo-grid">
-        <div class="demo-card" onclick="fillAndTrack('SIG-2026-0042')">
-          <div class="demo-num">0042</div>
-          <div><h4>رخصة بناء</h4><p>قيد الدراسة التقنية</p></div>
-          <div class="demo-status-dot dot-review"></div>
-        </div>
-        <div class="demo-card" onclick="fillAndTrack('SIG-2026-0017')">
-          <div class="demo-num">0017</div>
-          <div><h4>شهادة إقامة</h4><p>جاهزة للاستلام</p></div>
-          <div class="demo-status-dot dot-ready"></div>
-        </div>
-        <div class="demo-card" onclick="fillAndTrack('SIG-2026-0055')">
-          <div class="demo-num">0055</div>
-          <div><h4>كراء محل بلدي</h4><p>في انتظار المعالجة</p></div>
-          <div class="demo-status-dot dot-pending"></div>
-        </div>
-        <div class="demo-card" onclick="fillAndTrack('SIG-2026-0031')">
-          <div class="demo-num">0031</div>
-          <div><h4>مساعدة اجتماعية</h4><p>تمت الموافقة</p></div>
-          <div class="demo-status-dot dot-approved"></div>
-        </div>
-      </div>
-    </div>
-
+   
     <!-- ══════ INFO BOXES ══════ -->
     <div class="info-boxes">
       <div class="ib">
